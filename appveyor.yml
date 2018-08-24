@@ -1,19 +1,9 @@
-version: 0.3.{build}
+version: {build}
 
 image: 'WMF 5'
 
-skip_tags: true
-
-branches:
-  only:
-    - master
-
-skip_commits:
-  files:
-    - docs/*
-  message: /updated readme.*|update readme.*s|bumped version.*/
-
-build: false
+install:
+  - choco install gitversion.portable -pre -y
 
 environment:
   APPVEYOR_NUGET_API_KEY:
