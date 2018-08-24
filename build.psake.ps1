@@ -7,9 +7,9 @@ function Update-AdditionalReleaseArtifact {
 }
 
 Properties {
-    # $GitVersion = gitversion | ConvertFrom-Json
-    # $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $GitVersion.SemVer
-    # $ArtifactPath = Join-Path $env:BHBuildOutput $Artifact
+    $GitVersion = gitversion | ConvertFrom-Json
+    $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $GitVersion.SemVer
+    $ArtifactPath = Join-Path $env:BHBuildOutput $Artifact
 }
 
 FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
