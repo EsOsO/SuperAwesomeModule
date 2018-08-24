@@ -12,7 +12,7 @@
 RootModule = 'SuperAwesomeModule.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.3.7.0'
+ModuleVersion = '1.2.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -125,6 +125,7 @@ PrivateData = @{
 # DefaultCommandPrefix = ''
 
 }
+
 
 
 
