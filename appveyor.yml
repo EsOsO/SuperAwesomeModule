@@ -10,5 +10,7 @@ environment:
   APPVEYOR_GITHUB_EMAIL:
     secure: qOw7foLVABiwY5Y4Th58VNI8sbyJpNwvkFSI9DFxqII=
 
+build: false
+
 test_script:
   - ps: . .\build.ps1
