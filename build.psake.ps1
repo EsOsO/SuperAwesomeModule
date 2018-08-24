@@ -17,9 +17,11 @@ FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
 Task Default -Depends Build
 
 Task Init {
+    Set-Location $env:BHProjectPath
     Write-Host ('Working folder: {0}' -f $PWD)
     Write-Host ('GitVersion: {0}' -f $GitVersion.SemVer)
     Write-Host ('Git Branch: {0}' -f $GitVersion.BranchName)
+
 }
 
 Task IncrementVersion -Depends Init {
