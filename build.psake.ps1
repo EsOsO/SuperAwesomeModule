@@ -10,6 +10,9 @@ Properties {
     $GitVersion = gitversion | ConvertFrom-Json
     $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $GitVersion.SemVer
     $ArtifactPath = Join-Path $env:BHBuildOutput $Artifact
+    $StableVersion = $GitVersion.MajorMinorPatch
+    $BranchName = $GitVersion.BranchName
+    $SemVer = $GitVersion.SemVer
 }
 
 FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
@@ -19,8 +22,8 @@ Task Default -Depends Build
 Task Init {
     Set-Location $env:BHProjectPath
     Write-Host ('Working folder: {0}' -f $PWD)
-    Write-Host ('GitVersion: {0}' -f $GitVersion.SemVer)
-    Write-Host ('Git Branch: {0}' -f $GitVersion.BranchName)
+    Write-Host ('GitVersion: {0}' -f $SemVer)
+    Write-Host ('Git Branch: {0}' -f $BranchName)
 
 }
 
@@ -39,12 +42,10 @@ Task IncrementVersion -Depends Init {
     }
 
     Exec {git fetch origin}
-    Exec {git checkout master}
-    Exec {git merge origin/master --ff-only}
+    Exec {git checkout $BranchName}
+    Exec {git merge origin/$BranchName --ff-only}
 
-    Update-AdditionalReleaseArtifact -Version $GitVersion.MajorMinorPatch
-
-    $StableVersion = $GitVersion.MajorMinorPatch
+    Update-AdditionalReleaseArtifact -Version $StableVersion
 
     Exec {git commit -am "Create release $StableVersion" --allow-empty}
     Exec {git tag $StableVersion}
@@ -54,7 +55,7 @@ Task IncrementVersion -Depends Init {
         throw 'No changes detected since last release'
     }
 
-    Exec {git push origin master --tags}
+    Exec {git push origin $BranchName --tags}
 
     Pop-Location
 }
