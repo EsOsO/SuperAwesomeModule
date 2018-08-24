@@ -2,9 +2,8 @@ version: {build}
 
 image: 'WMF 5'
 
-branches:
-  only:
-    - master
+install:
+  - choco install gitversion.portable -pre -y
 
 environment:
   APPVEYOR_NUGET_API_KEY:
@@ -14,5 +13,5 @@ environment:
   APPVEYOR_GITHUB_EMAIL:
     secure: qOw7foLVABiwY5Y4Th58VNI8sbyJpNwvkFSI9DFxqII=
 
-build_script:
+test_script:
   - ps: . .\build.ps1
