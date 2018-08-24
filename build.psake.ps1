@@ -8,7 +8,7 @@ function Update-AdditionalReleaseArtifact {
 
 Properties {
     $GitVersion = gitversion | ConvertFrom-Json
-    $Artifact = '{0}.zip' -f $GitVersion.SemVer
+    $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $GitVersion.SemVer
     $ArtifactPath = Join-Path $env:BHBuildOutput $Artifact
 }
 
@@ -42,8 +42,10 @@ Task IncrementVersion -Depends Init {
 
     Update-AdditionalReleaseArtifact -Version $GitVersion.MajorMinorPatch
 
-    Exec {git commit -am "Create release ${GitVersion.MajorMinorPatch}" --allow-empty}
-    Exec {git tag ${GitVersion.MajorMinorPatch}}
+    $StableVersion = $GitVersion.MajorMinorPatch
+
+    Exec {git commit -am "Create release $StableVersion" --allow-empty}
+    Exec {git tag $StableVersion}
 
     if ($LASTEXITCODE -ne 0) {
         Exec {git reset --hard HEAD^}
