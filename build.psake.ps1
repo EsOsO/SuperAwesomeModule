@@ -42,7 +42,6 @@ Task IncrementVersion -Depends Init {
     }
 
     Exec {git fetch origin}
-    Exec {git checkout $BranchName}
     Exec {git merge origin/$BranchName --ff-only}
 
     Update-AdditionalReleaseArtifact -Version $StableVersion
