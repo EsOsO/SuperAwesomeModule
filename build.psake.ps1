@@ -21,10 +21,15 @@ Task Default -Depends Build
 
 Task Init {
     Set-Location $env:BHProjectPath
+
+    Exec {git config --global user.name $env:APPVEYOR_GITHUB_USERNAME}
+    Exec {git config --global user.email $env:APPVEYOR_GITHUB_EMAIL}
+
     Write-Host ('Working folder: {0}' -f $PWD)
     Write-Host ('GitVersion: {0}' -f $SemVer)
     Write-Host ('Git Branch: {0}' -f $BranchName)
-
+    Write-Host ('Git Username: {0}' -f $env:APPVEYOR_GITHUB_USERNAME)
+    Write-Host ('Git Email: {0}' -f $env:APPVEYOR_GITHUB_EMAIL)
 }
 
 Task IncrementVersion -Depends Init {

@@ -7,6 +7,7 @@ environment:
     secure: mpAaxyuSuuvCUyaZtUMQyADQ1z3IV7GAR20OQ2poqAQtyvjiOKR0OaiEPKF5bRUr
   APPVEYOR_PERSONAL_ACCESS_TOKEN:
     secure: y05S+3o1UZpiYaIwWudK9jeqe81X5rkqn0KPgatMLDz/rDUsaA/MKHh1d+dgw3F8
+  APPVEYOR_GITHUB_USERNAME: 'Massimo Bonvicini'
   APPVEYOR_GITHUB_EMAIL:
     secure: qOw7foLVABiwY5Y4Th58VNI8sbyJpNwvkFSI9DFxqII=
 
