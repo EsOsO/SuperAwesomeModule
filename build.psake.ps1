@@ -28,7 +28,7 @@ Task Init {
     Exec {git config --global user.name "$env:APPVEYOR_GITHUB_USERNAME"}
     Exec {git config --global user.email "$env:APPVEYOR_GITHUB_EMAIL"}
 
-    New-Item -Path $env:BHBuildOutput -ItemType Directory
+    New-Item -Path $env:BHBuildOutput -ItemType Directory | Out-Null
 
     Write-Host ('Working folder: {0}' -f $PWD)
     Write-Host ('Build output: {0}' -f $env:BHBuildOutput)
@@ -40,11 +40,11 @@ Task Init {
 }
 
 Task IncrementVersion -Depends Init {
-    trap {
-        Pop-Location
-        Write-Error "$_"
-        exit 1
-    }
+    # trap {
+    #     Pop-Location
+    #     Write-Error "$_"
+    #     exit 1
+    # }
 
     Push-Location $env:BHProjectPath
 
