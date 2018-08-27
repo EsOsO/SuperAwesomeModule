@@ -5,6 +5,8 @@ function Update-AdditionalReleaseArtifact {
 
     Write-Host ('Updating Module Manifest version number to: {0}' -f $Version)
     Update-Metadata -Path $env:BHPSModuleManifest -PropertyName ModuleVersion -Value $Version
+
+    Set-AppveyorBuildVariable -Name ReleaseDescription -Value (gc .\RELEASE.md)
 }
 
 Properties {

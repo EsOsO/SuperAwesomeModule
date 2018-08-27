@@ -21,7 +21,7 @@ test_script:
 
 deploy:
   tag: $(ReleaseVersion)
-  description: 'Release description'
+  description: $(ReleaseDescription)
   force_update: true
   draft: false
   prerelease: false
