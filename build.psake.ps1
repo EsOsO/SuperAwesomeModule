@@ -3,6 +3,7 @@ function Update-AdditionalReleaseArtifact {
         [string] $Version
     )
 
+    Write-Host ('Updating Module Manifest version number to: {0}' -f $Version)
     Update-Metadata -Path $env:BHPSModuleManifest -PropertyName ModuleVersion -Value $Version
 }
 
@@ -46,12 +47,18 @@ Task IncrementVersion -Depends Init {
         throw 'You have pending changes, aborting release'
     }
 
+    Write-Host 'Git: Fetchin origin'
     Exec {git fetch origin}
+
+    Write-Host "Git: Merging origin/$BranchName"
     Exec {git merge origin/$BranchName --ff-only}
 
     Update-AdditionalReleaseArtifact -Version $StableVersion
 
+    Write-Host 'Git: Committing new release'
     Exec {git commit -am "Create release $StableVersion" --allow-empty}
+
+    Write-Host 'Git: Tagging branch'
     Exec {git tag $StableVersion}
 
     if ($LASTEXITCODE -ne 0) {
@@ -59,6 +66,7 @@ Task IncrementVersion -Depends Init {
         throw 'No changes detected since last release'
     }
 
+    Write-Host 'Git: Pushing to origin'
     Exec {git push origin $BranchName --tags}
 
     Pop-Location
