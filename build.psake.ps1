@@ -8,10 +8,11 @@ function Update-AdditionalReleaseArtifact {
 }
 
 Properties {
-    $TestsFolder = '.\Tests'
     $GitVersion = gitversion | ConvertFrom-Json
     $BranchName = $GitVersion.BranchName
     $SemVer = $GitVersion.SemVer
+    $TestsFolder = '.\Tests'
+    $TestsFile = Join-Path $env:BHBuildOutput ('tests-{0}-{1}.xml' -f $BranchName, $SemVer)
     $StableVersion = $GitVersion.MajorMinorPatch
     $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $SemVer
     $BuildBaseModule = Join-Path $env:BHBuildOutput $env:BHProjectName
@@ -50,8 +51,8 @@ Task CodeAnalisys -Depends Init {
 }
 
 Task Tests -Depends CodeAnalisys {
-    $TestResults = Invoke-Pester -Path $TestsFolder -PassThru
-
+    $TestResults = Invoke-Pester -Path $TestsFolder -PassThru -OutputFormat NUnitXml -OutputFile $TestsFile
+    Add-AppveyorTest -Name Pester -Framework NUnit -FileName $TestsFile
     if ($TestResults.FailedCount -gt 0) {
         Write-Error "Build failed. [$($TestResults.FailedCount) Errors]"
     }

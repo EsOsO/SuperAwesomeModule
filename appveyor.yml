@@ -22,9 +22,9 @@ test_script:
 deploy:
   tag: $(ReleaseVersion)
   description: 'Release description'
-  provider: GitHub
   force_update: true
   draft: false
   prerelease: false
+  provider: GitHub
   auth_token:
     secure: +qE3B06ZU3qbWDRZLAU+gIqJBnlWBGl8Uk7177ARCb2n5MAWe+P2wNUjPx7SoJEo
