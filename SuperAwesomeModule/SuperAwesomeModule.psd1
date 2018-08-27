@@ -12,7 +12,7 @@
 RootModule = 'SuperAwesomeModule.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.5.0-unstable.15'
+ModuleVersion = '1.5.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
