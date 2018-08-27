@@ -15,6 +15,7 @@ Properties {
     $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $SemVer
     $ArtifactFolder = Join-Path $env:BHBuildOutput $Semver
     $ArtifactPath = Join-Path $ArtifactFolder $Artifact
+    $TestsFolder = '.\Tests'
 }
 
 FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
@@ -47,7 +48,7 @@ Task CodeAnalisys -Depends Init {
 }
 
 Task Tests -Depends CodeAnalisys {
-
+    Invoke-Pester -Path $TestsFolder
 }
 
 Task IncrementVersion -Depends Tests {

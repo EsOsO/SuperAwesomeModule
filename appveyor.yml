@@ -24,6 +24,7 @@ deploy:
   description: 'Release description'
   provider: GitHub
   artifact: /.*\.zip/
+  force_update: true
   draft: false
   prerelease: false
   auth_token:
