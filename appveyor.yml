@@ -9,7 +9,7 @@ environment:
   APPVEYOR_NUGET_API_KEY:
     secure: mpAaxyuSuuvCUyaZtUMQyADQ1z3IV7GAR20OQ2poqAQtyvjiOKR0OaiEPKF5bRUr
   APPVEYOR_PERSONAL_ACCESS_TOKEN:
-    secure: y05S+3o1UZpiYaIwWudK9jeqe81X5rkqn0KPgatMLDz/rDUsaA/MKHh1d+dgw3F8
+    secure: +qE3B06ZU3qbWDRZLAU+gIqJBnlWBGl8Uk7177ARCb2n5MAWe+P2wNUjPx7SoJEo
   APPVEYOR_GITHUB_USERNAME: 'Massimo Bonvicini'
   APPVEYOR_GITHUB_EMAIL:
     secure: qOw7foLVABiwY5Y4Th58VNI8sbyJpNwvkFSI9DFxqII=
@@ -20,12 +20,10 @@ test_script:
   - ps: . .\build.ps1
 
 deploy:
-  release: superawesomemodule-v$(ReleaseVersion)
   description: 'Release description'
   provider: GitHub
-  artifact: /.*\.zip/
   force_update: true
   draft: false
   prerelease: false
   auth_token:
-    secure: y05S+3o1UZpiYaIwWudK9jeqe81X5rkqn0KPgatMLDz/rDUsaA/MKHh1d+dgw3F8
+    secure: +qE3B06ZU3qbWDRZLAU+gIqJBnlWBGl8Uk7177ARCb2n5MAWe+P2wNUjPx7SoJEo

@@ -71,7 +71,7 @@ Task IncrementVersion -Depends Tests {
     Write-Host "Git: Merging origin/$BranchName"
     Exec {git merge origin/$BranchName --ff-only}
 
-    Update-AdditionalReleaseArtifact -Version $SemVer
+    Update-AdditionalReleaseArtifact -Version $StableVersion
 
     Write-Host 'Git: Committing new release'
     Exec {git commit -am "Create release $SemVer [skip ci]" --allow-empty}
