@@ -2,6 +2,9 @@ version: '{build}'
 
 image: 'WMF 5'
 
+skip_commits:
+  message: /\[skip ci\]/
+
 environment:
   APPVEYOR_NUGET_API_KEY:
     secure: mpAaxyuSuuvCUyaZtUMQyADQ1z3IV7GAR20OQ2poqAQtyvjiOKR0OaiEPKF5bRUr

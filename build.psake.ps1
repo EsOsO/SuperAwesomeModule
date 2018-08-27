@@ -59,7 +59,7 @@ Task IncrementVersion -Depends Init {
     Update-AdditionalReleaseArtifact -Version $StableVersion
 
     Write-Host 'Git: Committing new release'
-    Exec {git commit -am "Create release $StableVersion" --allow-empty}
+    Exec {git commit -am "Create release $StableVersion [skip ci]" --allow-empty}
 
     Write-Host 'Git: Tagging branch'
     Exec {git tag $StableVersion}
