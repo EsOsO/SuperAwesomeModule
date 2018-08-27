@@ -28,7 +28,10 @@ Task Init {
     Exec {git config --global user.name "$env:APPVEYOR_GITHUB_USERNAME"}
     Exec {git config --global user.email "$env:APPVEYOR_GITHUB_EMAIL"}
 
+    New-Item -Path $env:BHBuildOutput -ItemType Directory
+
     Write-Host ('Working folder: {0}' -f $PWD)
+    Write-Host ('Build output: {0}' -f $env:BHBuildOutput)
     Write-Host ('Git Version: {0}' -f $SemVer)
     Write-Host ('Git Version (Stable): {0}' -f $StableVersion)
     Write-Host ('Git Branch: {0}' -f $BranchName)
@@ -59,22 +62,23 @@ Task IncrementVersion -Depends Init {
     Update-AdditionalReleaseArtifact -Version $StableVersion
 
     Write-Host 'Git: Committing new release'
-    Exec {git commit -am "Create release $StableVersion [skip ci]" --allow-empty}
+    Exec {git commit -am "Create release $SemVer [skip ci]" --allow-empty}
 
     Write-Host 'Git: Tagging branch'
-    Exec {git tag $StableVersion}
+    Exec {git tag $SemVer}
 
     if ($LASTEXITCODE -ne 0) {
         Exec {git reset --hard HEAD^}
         throw 'No changes detected since last release'
     }
 
-    # Write-Host 'Git: Pushing to origin'
-    # Exec {git push origin $BranchName --tags}
+    Write-Host 'Git: Pushing to origin'
+    Exec {git push origin $BranchName --tags}
 
     Pop-Location
 }
 
 Task Build -Depends IncrementVersion {
+    Write-Host "Build: Compressing release to $ArtifactPath"
     Compress-Archive -Path $env:BHModulePath -DestinationPath $ArtifactPath
 }
