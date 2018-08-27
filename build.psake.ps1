@@ -8,14 +8,15 @@ function Update-AdditionalReleaseArtifact {
 }
 
 Properties {
+    $TestsFolder = '.\Tests'
     $GitVersion = gitversion | ConvertFrom-Json
     $BranchName = $GitVersion.BranchName
     $SemVer = $GitVersion.SemVer
     $StableVersion = $GitVersion.MajorMinorPatch
     $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $SemVer
-    $ArtifactFolder = Join-Path $env:BHBuildOutput $StableVersion
+    $BuildBaseModule = Join-Path $env:BHBuildOutput $env:BHProjectName
+    $BuildVersionedModule = Join-Path $BuildBaseModule $StableVersion
     $ArtifactPath = Join-Path $env:BHBuildOutput $Artifact
-    $TestsFolder = '.\Tests'
 }
 
 FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
@@ -95,11 +96,14 @@ Task IncrementVersion -Depends Tests {
 }
 
 Task Build -Depends IncrementVersion {
+    if (-not (Test-Path $BuildBaseModule)) {New-Item -Path $BuildBaseModule -ItemType Directory | Out-Null}
+    if (-not (Test-Path $BuildVersionedModule)) {New-Item -Path $BuildVersionedModule -ItemType Directory | Out-Null}
+
     Write-Host "Build: Copying module to $ArtifactFolder"
-    Copy-Item -Path $env:BHModulePath -Destination $ArtifactFolder -Recurse
+    Copy-Item -Path $env:BHModulePath\ -Destination $BuildVersionedModule -Recurse
 
     Write-Host "Build: Compressing release to $ArtifactPath"
-    Compress-Archive -Path $ArtifactFolder -DestinationPath $ArtifactPath
+    Compress-Archive -Path $BuildBaseModule -DestinationPath $ArtifactPath
 
     Write-Host "Build: Pushing release to Appveyor"
     Push-AppveyorArtifact -Path $ArtifactPath

@@ -20,6 +20,7 @@ test_script:
   - ps: . .\build.ps1
 
 deploy:
+  tag: $(ReleaseVersion)
   description: 'Release description'
   provider: GitHub
   force_update: true
