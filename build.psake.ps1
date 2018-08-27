@@ -45,6 +45,18 @@ Task Init {
     Write-Host ('Git Branch: {0}' -f $BranchName)
     Write-Host ('Git Username: {0}' -f $env:APPVEYOR_GITHUB_USERNAME)
     Write-Host ('Git Email: {0}' -f $env:APPVEYOR_GITHUB_EMAIL)
+
+    $PendingChanges = git status --porcelain
+    if ($null -ne $PendingChanges) {
+        throw 'You have pending changes, aborting release'
+    }
+
+    Write-Host 'Git: Fetchin origin'
+    Exec {git fetch origin}
+
+    Write-Host "Git: Merging origin/$BranchName"
+    Exec {git merge origin/$BranchName --ff-only}
+
 }
 
 Task CodeAnalisys -Depends Init {
@@ -80,25 +92,6 @@ Task BuildDocs -Depends Tests {
 }
 
 Task IncrementVersion -Depends BuildDocs {
-    trap {
-        Pop-Location
-        Write-Error "$_"
-        exit 1
-    }
-
-    Push-Location $env:BHProjectPath
-
-    $PendingChanges = git status --porcelain
-    if ($null -ne $PendingChanges) {
-        throw 'You have pending changes, aborting release'
-    }
-
-    Write-Host 'Git: Fetchin origin'
-    Exec {git fetch origin}
-
-    Write-Host "Git: Merging origin/$BranchName"
-    Exec {git merge origin/$BranchName --ff-only}
-
     Update-AdditionalReleaseArtifact -Version $StableVersion
 
     Write-Host 'Git: Committing new release'
