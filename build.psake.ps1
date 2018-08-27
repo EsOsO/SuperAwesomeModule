@@ -73,9 +73,9 @@ Task IncrementVersion -Depends Init {
     }
 
     Write-Host 'Git: Pushing to origin'
-    Exec {git push origin $BranchName --tags}
+    git push origin $BranchName --tags
 
-    Pop-Location
+    # Pop-Location
 }
 
 Task Build -Depends IncrementVersion {
