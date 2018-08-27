@@ -52,13 +52,32 @@ Task CodeAnalisys -Depends Init {
 
 Task Tests -Depends CodeAnalisys {
     $TestResults = Invoke-Pester -Path $TestsFolder -PassThru -OutputFormat NUnitXml -OutputFile $TestsFile
-    Add-AppveyorTest -Name Pester -Framework NUnit -FileName $TestsFile
+
+    switch ($env:BHBuildSystem) {
+        'AppVeyor' {
+            Add-AppveyorTest -Name Pester -Framework NUnit -FileName $TestsFile
+        }
+
+        Default {
+            Write-Warning "Publish test result not implemented for build system '$($ENV:BHBuildSystem)'"
+        }
+    }
+
     if ($TestResults.FailedCount -gt 0) {
         Write-Error "Build failed. [$($TestResults.FailedCount) Errors]"
     }
 }
 
-Task IncrementVersion -Depends Tests {
+Task BuildDocs -Depends Tests {
+    Import-Module $env:BHPSModuleManifest -Global
+
+    Write-Host 'BuildDocs: Generating Help for exported functions'
+    New-MarkdownHelp -Module $env:BHProjectName -OutputFolder .\docs\functions
+
+    Remove-Module $env:BHProjectName -Force
+}
+
+Task IncrementVersion -Depends BuildDocs {
     trap {
         Pop-Location
         Write-Error "$_"
