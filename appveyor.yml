@@ -27,3 +27,5 @@ deploy:
   prerelease: false
   auth_token:
     secure: +qE3B06ZU3qbWDRZLAU+gIqJBnlWBGl8Uk7177ARCb2n5MAWe+P2wNUjPx7SoJEo
+  on:
+    appveyor_repo_tag: true

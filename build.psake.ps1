@@ -13,8 +13,8 @@ Properties {
     $SemVer = $GitVersion.SemVer
     $StableVersion = $GitVersion.MajorMinorPatch
     $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $SemVer
-    $ArtifactFolder = Join-Path $env:BHBuildOutput $Semver
-    $ArtifactPath = Join-Path $ArtifactFolder $Artifact
+    $ArtifactFolder = Join-Path $env:BHBuildOutput $StableVersion
+    $ArtifactPath = Join-Path $env:BHBuildOutput $Artifact
     $TestsFolder = '.\Tests'
 }
 
@@ -91,8 +91,11 @@ Task IncrementVersion -Depends Tests {
 }
 
 Task Build -Depends IncrementVersion {
+    Write-Host "Build: Copying module to $ArtifactFolder"
+    Copy-Item -Path $env:BHModulePath -Destination $ArtifactFolder -Recurse
+
     Write-Host "Build: Compressing release to $ArtifactPath"
-    Compress-Archive -Path $env:BHModulePath -DestinationPath $ArtifactPath
+    Compress-Archive -Path $ArtifactFolder -DestinationPath $ArtifactPath
 
     Write-Host "Build: Pushing release to Appveyor"
     Push-AppveyorArtifact -Path $ArtifactPath
