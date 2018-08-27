@@ -74,7 +74,7 @@ Task BuildDocs -Depends Tests {
     Import-Module $env:BHPSModuleManifest -Global
 
     Write-Host 'BuildDocs: Generating Help for exported functions'
-    New-MarkdownHelp -Module $env:BHProjectName -OutputFolder .\docs\functions
+    New-MarkdownHelp -Module $env:BHProjectName -OutputFolder .\docs\functions -Force
 
     Remove-Module $env:BHProjectName -Force
 }
