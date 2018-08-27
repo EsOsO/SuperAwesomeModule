@@ -72,8 +72,8 @@ Task IncrementVersion -Depends Init {
         throw 'No changes detected since last release'
     }
 
-    Write-Host 'Git: Pushing to origin'
-    git push origin $BranchName --tags
+    # Write-Host 'Git: Pushing to origin'
+    # git push origin $BranchName --tags
 
     # Pop-Location
 }

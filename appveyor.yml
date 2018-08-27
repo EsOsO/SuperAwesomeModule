@@ -18,3 +18,6 @@ build: false
 
 test_script:
   - ps: . .\build.ps1
+
+on_success:
+  - git push origin --tags
