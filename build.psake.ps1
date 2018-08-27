@@ -27,6 +27,8 @@ Task Default -Depends Build
 Task Init {
     Set-Location $env:BHProjectPath
 
+    New-Item -Path $env:BHBuildOutput -ItemType Directory | Out-Null
+
     Exec {git config --global credential.helper store}
 
     Add-Content "$HOME\.git-credentials" "https://$($env:APPVEYOR_PERSONAL_ACCESS_TOKEN):x-oauth-basic@github.com`n"
