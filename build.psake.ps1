@@ -9,11 +9,12 @@ function Update-AdditionalReleaseArtifact {
 
 Properties {
     $GitVersion = gitversion | ConvertFrom-Json
-    $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $GitVersion.SemVer
-    $ArtifactPath = Join-Path $env:BHBuildOutput $Artifact
-    $StableVersion = $GitVersion.MajorMinorPatch
     $BranchName = $GitVersion.BranchName
     $SemVer = $GitVersion.SemVer
+    $StableVersion = $GitVersion.MajorMinorPatch
+    $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $SemVer
+    $ArtifactFolder = Join-Path $env:BHBuildOutput $Semver
+    $ArtifactPath = Join-Path $ArtifactFolder $Artifact
 }
 
 FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
@@ -28,7 +29,7 @@ Task Init {
     Exec {git config --global user.name "$env:APPVEYOR_GITHUB_USERNAME"}
     Exec {git config --global user.email "$env:APPVEYOR_GITHUB_EMAIL"}
 
-    New-Item -Path $env:BHBuildOutput -ItemType Directory | Out-Null
+    New-Item -Path $ArtifactFolder -ItemType Directory | Out-Null
     Set-AppveyorBuildVariable -Name 'ReleaseVersion' -Value $SemVer
 
     Write-Host ('Working folder: {0}' -f $PWD)
@@ -40,12 +41,21 @@ Task Init {
     Write-Host ('Git Email: {0}' -f $env:APPVEYOR_GITHUB_EMAIL)
 }
 
-Task IncrementVersion -Depends Init {
-    # trap {
-    #     Pop-Location
-    #     Write-Error "$_"
-    #     exit 1
-    # }
+Task CodeAnalisys -Depends Init {
+    Write-Host 'ScriptAnalyzer: Running'
+    Invoke-ScriptAnalyzer -Path $env:BHModulePath -Recurse -Severity Warning
+}
+
+Task Tests -Depends CodeAnalisys {
+
+}
+
+Task IncrementVersion -Depends Tests {
+    trap {
+        Pop-Location
+        Write-Error "$_"
+        exit 1
+    }
 
     Push-Location $env:BHProjectPath
 
@@ -60,7 +70,7 @@ Task IncrementVersion -Depends Init {
     Write-Host "Git: Merging origin/$BranchName"
     Exec {git merge origin/$BranchName --ff-only}
 
-    Update-AdditionalReleaseArtifact -Version $StableVersion
+    Update-AdditionalReleaseArtifact -Version $SemVer
 
     Write-Host 'Git: Committing new release'
     Exec {git commit -am "Create release $SemVer [skip ci]" --allow-empty}
@@ -74,7 +84,7 @@ Task IncrementVersion -Depends Init {
     }
 
     Write-Host 'Git: Pushing tags to origin'
-    Exec {git push -q origin --tags}
+    Exec {git push -q origin $BranchName --tags}
 
     Pop-Location
 }

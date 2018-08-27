@@ -1,0 +1,2 @@
+- Fixed GitHub releases
+- Added code analisys

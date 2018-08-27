@@ -26,3 +26,5 @@ deploy:
   artifact: /.*\.zip/
   draft: false
   prerelease: false
+  auth_token:
+    secure: y05S+3o1UZpiYaIwWudK9jeqe81X5rkqn0KPgatMLDz/rDUsaA/MKHh1d+dgw3F8
