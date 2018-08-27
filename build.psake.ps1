@@ -116,7 +116,7 @@ Task Build -Depends IncrementVersion {
     if (-not (Test-Path $BuildVersionedModule)) {New-Item -Path $BuildVersionedModule -ItemType Directory | Out-Null}
 
     Write-Host "Build: Copying module to $ArtifactFolder"
-    Copy-Item -Path $env:BHModulePath\ -Destination $BuildVersionedModule -Recurse
+    Copy-Item -Path $env:BHModulePath\* -Destination $BuildVersionedModule -Recurse
 
     Write-Host "Build: Compressing release to $ArtifactPath"
     Compress-Archive -Path $BuildBaseModule -DestinationPath $ArtifactPath
