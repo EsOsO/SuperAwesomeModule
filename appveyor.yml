@@ -19,5 +19,10 @@ build: false
 test_script:
   - ps: . .\build.ps1
 
-on_success:
-  - git push origin --tags
+deploy:
+  release: superawesomemodule-v$(ReleaseVersion)
+  description: 'Release description'
+  provider: GitHub
+  artifact: /.*\.zip/
+  draft: false
+  prerelease: false

@@ -29,6 +29,7 @@ Task Init {
     Exec {git config --global user.email "$env:APPVEYOR_GITHUB_EMAIL"}
 
     New-Item -Path $env:BHBuildOutput -ItemType Directory | Out-Null
+    Set-AppveyorBuildVariable -Name 'ReleaseVersion' -Value $SemVer
 
     Write-Host ('Working folder: {0}' -f $PWD)
     Write-Host ('Build output: {0}' -f $env:BHBuildOutput)
@@ -72,13 +73,16 @@ Task IncrementVersion -Depends Init {
         throw 'No changes detected since last release'
     }
 
-    # Write-Host 'Git: Pushing to origin'
-    # git push origin $BranchName --tags
+    Write-Host 'Git: Pushing tags to origin'
+    Exec {git push -q origin --tags}
 
-    # Pop-Location
+    Pop-Location
 }
 
 Task Build -Depends IncrementVersion {
     Write-Host "Build: Compressing release to $ArtifactPath"
     Compress-Archive -Path $env:BHModulePath -DestinationPath $ArtifactPath
+
+    Write-Host "Build: Pushing release to Appveyor"
+    Push-AppveyorArtifact -Path $ArtifactPath
 }
