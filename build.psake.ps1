@@ -23,6 +23,7 @@ Task Default -Depends Build
 Task Init {
     Set-Location $env:BHProjectPath
 
+    Exec {git config --global credential.helper store}
     Exec {git config --global user.name $env:APPVEYOR_GITHUB_USERNAME}
     Exec {git config --global user.email $env:APPVEYOR_GITHUB_EMAIL}
 
@@ -69,6 +70,8 @@ Task IncrementVersion -Depends Init {
 
     Write-Host 'Git: Pushing to origin'
     git push origin $BranchName --tags
+
+    Pop-Location
 }
 
 Task Build -Depends IncrementVersion {
