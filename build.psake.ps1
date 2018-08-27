@@ -27,11 +27,12 @@ Task Init {
     Set-Location $env:BHProjectPath
 
     Exec {git config --global credential.helper store}
+
     Add-Content "$HOME\.git-credentials" "https://$($env:APPVEYOR_PERSONAL_ACCESS_TOKEN):x-oauth-basic@github.com`n"
+
     Exec {git config --global user.name "$env:APPVEYOR_GITHUB_USERNAME"}
     Exec {git config --global user.email "$env:APPVEYOR_GITHUB_EMAIL"}
 
-    New-Item -Path $ArtifactFolder -ItemType Directory | Out-Null
     Set-AppveyorBuildVariable -Name 'ReleaseVersion' -Value $SemVer
 
     Write-Host ('Working folder: {0}' -f $PWD)
