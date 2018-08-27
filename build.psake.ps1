@@ -48,7 +48,11 @@ Task CodeAnalisys -Depends Init {
 }
 
 Task Tests -Depends CodeAnalisys {
-    Invoke-Pester -Path $TestsFolder
+    $TestResults = Invoke-Pester -Path $TestsFolder -PassThru
+
+    if ($TestResults.FailedCount -gt 0) {
+        Write-Error "Build failed. [$($TestResults.FailedCount) Errors]"
+    }
 }
 
 Task IncrementVersion -Depends Tests {
