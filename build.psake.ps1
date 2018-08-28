@@ -108,7 +108,7 @@ Task BuildDocs -Depends Tests {
     Write-Host 'BuildDocs: Generating Help for exported functions'
     New-MarkdownHelp -Module $env:BHProjectName -OutputFolder .\docs\functions -Force
 
-    Copy-Item -Path .\header-mkdocs.yml -Desctination mkdocs.yml -Force
+    Copy-Item -Path .\header-mkdocs.yml -Destination mkdocs.yml -Force
     $ExportedFunctions | %{
         ("`t`t- {0}: {0}.md`n" -f $_) | Out-File .\mkdocs.yml -Append
     }
