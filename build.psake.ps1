@@ -16,6 +16,8 @@ function Update-AdditionalReleaseArtifact {
     "# {0} ({1})`n`n" -f $Version, $CommitDate | Out-File $ChangelogTemp -Encoding utf8
     "{0}`n`n" -f $ReleaseDescription | Out-File $ChangelogTemp -Append -Encoding utf8
     "{0}" -f $Changelog | Out-File $ChangelogTemp -Append -Encoding utf8
+
+    Copy-Item $ChangelogTemp $ChangelogFile -Force
 }
 
 Properties {
@@ -89,9 +91,10 @@ Task Tests -Depends CodeAnalisys {
 
     switch ($env:BHBuildSystem) {
         'AppVeyor' {
-            Add-AppveyorTest -Name Pester -Framework NUnit -FileName $TestsFile
+            Get-ChildItem -Path $env:BHBuildOutput -Filter 'tests-*.xml' -File | ForEach-Object {
+                (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", "$($_.FullName)")
+            }
         }
-
         Default {
             Write-Warning "Publish test result not implemented for build system '$($ENV:BHBuildSystem)'"
         }
@@ -110,7 +113,7 @@ Task BuildDocs -Depends Tests {
 
     Copy-Item -Path .\header-mkdocs.yml -Destination mkdocs.yml -Force
     $ExportedFunctions | %{
-        ("`t`t- {0}: {0}.md`n" -f $_) | Out-File .\mkdocs.yml -Append
+        ("`t- {0}: {0}.md`n`r" -f $_) | Out-File .\mkdocs.yml -Append
     }
 
     Remove-Module $env:BHProjectName -Force
