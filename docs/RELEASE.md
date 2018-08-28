@@ -1,3 +1,4 @@
 - fixed appveyor build process
 - added github release after build
 - build doc for readthedocs.org
+- fixed doc CRLF
