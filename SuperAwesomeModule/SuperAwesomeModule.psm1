@@ -3,9 +3,9 @@ $PublicFunctions = @(Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPa
 $PrivateFunctions = @(Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath 'private/*.ps1') -Recurse -ErrorAction SilentlyContinue)
 
 $AllFunctions = $PublicFunctions + $PrivateFunctions
-foreach ($function in $AllFunctions) {
+foreach ($Function in $AllFunctions) {
     try {
-        . $function.FullName
+        . $Function.FullName
     }
     catch {
         throw "Unable to dot source [$($import.FullName)]"
