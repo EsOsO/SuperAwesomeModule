@@ -13,9 +13,9 @@ function Update-AdditionalReleaseArtifact {
 
     $Changelog = gc $ChangelogFile
 
-    "# {0} ({1})`n`r`n`r" -f $Version, $CommitDate | Out-File $ChangelogTemp -Encoding utf8
-    "{0}`n`r`n`r" -f $ReleaseDescription | Out-File $ChangelogTemp -Append -Encoding utf8
-    "{0}`n`r" -f $Changelog | Out-File $ChangelogTemp -Append -Encoding utf8
+    "# {0} ({1})`r`n" -f $Version, $CommitDate | Out-File $ChangelogTemp -Encoding utf8
+    "{0}`r`n`r`n" -f $ReleaseDescription | Out-File $ChangelogTemp -Append -Encoding utf8
+    "{0}`r`n" -f $Changelog | Out-File $ChangelogTemp -Append -Encoding utf8
 
     Copy-Item $ChangelogTemp $ChangelogFile -Force
 }
@@ -113,7 +113,7 @@ Task BuildDocs -Depends Tests {
 
     Copy-Item -Path .\header-mkdocs.yml -Destination mkdocs.yml -Force
     $ExportedFunctions | %{
-        ("`t- {0}: {0}.md`n`r" -f $_) | Out-File .\mkdocs.yml -Append
+        ("`t- {0}: {0}.md`r`n" -f $_) | Out-File .\mkdocs.yml -Append
     }
 
     Remove-Module $env:BHProjectName -Force
