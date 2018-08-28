@@ -1,25 +1,44 @@
 function Update-AdditionalReleaseArtifact {
     param(
-        [string] $Version
+        [string] $Version,
+        [string] $CommitDate
     )
 
     Write-Host ('Updating Module Manifest version number to: {0}' -f $Version)
     Update-Metadata -Path $env:BHPSModuleManifest -PropertyName ModuleVersion -Value $Version
 
-    Set-AppveyorBuildVariable -Name ReleaseDescription -Value (gc .\RELEASE.md)
+    Write-Host 'Getting release notes'
+    $ReleaseDescription = gc $ReleaseFile
+    Set-AppveyorBuildVariable -Name ReleaseDescription -Value $ReleaseDescription
+
+    $Changelog = gc $ChangelogFile
+
+    "# {0} ({1})`n`n" -f $Version, $CommitDate | Out-File $ChangelogTemp -Encoding utf8
+    "{0}`n`n" -f $ReleaseDescription | Out-File $ChangelogTemp -Append -Encoding utf8
+    "{0}" -f $Changelog | Out-File $ChangelogTemp -Append -Encoding utf8
 }
 
 Properties {
     $GitVersion = gitversion | ConvertFrom-Json
     $BranchName = $GitVersion.BranchName
     $SemVer = $GitVersion.SemVer
+    $StableVersion = $GitVersion.MajorMinorPatch
+
     $TestsFolder = '.\Tests'
     $TestsFile = Join-Path $env:BHBuildOutput ('tests-{0}-{1}.xml' -f $BranchName, $SemVer)
-    $StableVersion = $GitVersion.MajorMinorPatch
+
     $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $SemVer
     $BuildBaseModule = Join-Path $env:BHBuildOutput $env:BHProjectName
     $BuildVersionedModule = Join-Path $BuildBaseModule $StableVersion
     $ArtifactPath = Join-Path $env:BHBuildOutput $Artifact
+
+    $ReleaseFile = Join-Path $env:BHProjectPath 'docs\RELEASE.md'
+    $ChangelogFile = Join-Path $env:BHProjectPath 'docs\CHANGELOG.md'
+    $ChangelogTemp = Join-Path $env:BHBuildOutput 'CHANGELOG.md.tmp'
+
+    Import-Module $env:BHPSModuleManifest -Global
+    $ExportedFunctions = Get-Command -Module $env:BHProjectName | select -ExpandProperty Name
+    Remove-Module $env:BHProjectName -Force
 }
 
 FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
@@ -58,7 +77,6 @@ Task Init {
 
     Write-Host "Git: Merging origin/$BranchName"
     Exec {git merge origin/$BranchName --ff-only}
-
 }
 
 Task CodeAnalisys -Depends Init {
@@ -90,11 +108,19 @@ Task BuildDocs -Depends Tests {
     Write-Host 'BuildDocs: Generating Help for exported functions'
     New-MarkdownHelp -Module $env:BHProjectName -OutputFolder .\docs\functions -Force
 
+    Copy-Item -Path .\header-mkdocs.yml -Desctination mkdocs.yml -Force
+    $ExportedFunctions | %{
+        ("`t`t- {0}: {0}.md`n" -f $_) | Out-File .\mkdocs.yml -Append
+    }
+
     Remove-Module $env:BHProjectName -Force
+
+    Write-Host 'Git: Committing updated docs'
+    Exec {git commit -am "Updated docs [skip ci]" --allow-empty}
 }
 
 Task IncrementVersion -Depends BuildDocs {
-    Update-AdditionalReleaseArtifact -Version $StableVersion
+    Update-AdditionalReleaseArtifact -Version $StableVersion -CommitDate $GitVersion.CommitDate
 
     Write-Host 'Git: Committing new release'
     Exec {git commit -am "Create release $SemVer [skip ci]" --allow-empty}
@@ -125,4 +151,8 @@ Task Build -Depends IncrementVersion {
 
     Write-Host "Build: Pushing release to Appveyor"
     Push-AppveyorArtifact -Path $ArtifactPath
+}
+
+Task PublishModule -Depends Build {
+
 }

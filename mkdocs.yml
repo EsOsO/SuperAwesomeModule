@@ -13,7 +13,6 @@ nav:
     - Contributing: CONTRIBUTING.md
     - License: LICENSE
   - Release Notes: RELEASE.md
-  - Change Log: ChangeLog.md
   - Functions:
     - Get-SuperAwesomeFunction: functions/Get-SuperAwesomeFunction.md
 
