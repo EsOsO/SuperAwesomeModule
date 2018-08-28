@@ -13,9 +13,9 @@ function Update-AdditionalReleaseArtifact {
 
     $Changelog = gc $ChangelogFile
 
-    "# {0} ({1})`r`n" -f $Version, $CommitDate | Out-File $ChangelogTemp -Encoding utf8
-    "{0}`r`n`r`n" -f $ReleaseDescription | Out-File $ChangelogTemp -Append -Encoding utf8
-    "{0}`r`n" -f $Changelog | Out-File $ChangelogTemp -Append -Encoding utf8
+    "# {0} ({1})`r`n" -f $Version, $CommitDate | Out-File $ChangelogTemp -Encoding ascii
+    "{0}`r`n`r`n" -f $ReleaseDescription | Out-File $ChangelogTemp -Append -Encoding ascii
+    "{0}`r`n" -f $Changelog | Out-File $ChangelogTemp -Append -Encoding ascii
 
     Copy-Item $ChangelogTemp $ChangelogFile -Force
 }
@@ -66,8 +66,6 @@ Task Init {
     Write-Host ('Git Version: {0}' -f $SemVer)
     Write-Host ('Git Version (Stable): {0}' -f $StableVersion)
     Write-Host ('Git Branch: {0}' -f $BranchName)
-    Write-Host ('Git Username: {0}' -f $env:APPVEYOR_GITHUB_USERNAME)
-    Write-Host ('Git Email: {0}' -f $env:APPVEYOR_GITHUB_EMAIL)
 
     $PendingChanges = git status --porcelain
     if ($null -ne $PendingChanges) {
