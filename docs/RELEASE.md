@@ -1,6 +1,3 @@
-# Version 0.3.7.0 (2018-08-23)
-- fixed remove module
-- uncommented releasenotes
-- updated readme
-- fixed tests
-- first commmit to test ci/cd
+- fixed appveyor build process
+- added github release after build
+- build doc for readthedocs.org

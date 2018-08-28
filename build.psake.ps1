@@ -13,9 +13,9 @@ function Update-AdditionalReleaseArtifact {
 
     $Changelog = gc $ChangelogFile
 
-    "# {0} ({1})`n`n" -f $Version, $CommitDate | Out-File $ChangelogTemp -Encoding utf8
-    "{0}`n`n" -f $ReleaseDescription | Out-File $ChangelogTemp -Append -Encoding utf8
-    "{0}" -f $Changelog | Out-File $ChangelogTemp -Append -Encoding utf8
+    "# {0} ({1})`n`r`n`r" -f $Version, $CommitDate | Out-File $ChangelogTemp -Encoding utf8
+    "{0}`n`r`n`r" -f $ReleaseDescription | Out-File $ChangelogTemp -Append -Encoding utf8
+    "{0}`n`r" -f $Changelog | Out-File $ChangelogTemp -Append -Encoding utf8
 
     Copy-Item $ChangelogTemp $ChangelogFile -Force
 }
