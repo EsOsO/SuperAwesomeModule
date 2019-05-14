@@ -1,5 +1,5 @@
 @{
-    psake             = @{
+    psake            = @{
         Name           = 'psake'
         DependencyType = 'PSGalleryModule'
         Parameters     = @{
@@ -11,31 +11,7 @@
         Tags           = 'Bootstrap'
     }
 
-    Pester            = @{
-        Name           = 'Pester'
-        DependencyType = 'PSGalleryModule'
-        Parameters     = @{
-            Repository         = 'PSGallery'
-            SkipPublisherCheck = $true
-        }
-        Target         = 'CurrentUser'
-        Version        = '4.7.3'
-        Tags           = 'Test'
-    }
-
-    PSScriptAnalyzer  = @{
-        Name           = 'PSScriptAnalyzer'
-        DependencyType = 'PSGalleryModule'
-        Parameters     = @{
-            Repository         = 'PSGallery'
-            SkipPublisherCheck = $true
-        }
-        Target         = 'CurrentUser'
-        Version        = '1.18.0'
-        Tags           = 'Test'
-    }
-
-    BuildHelpers      = @{
+    BuildHelpers     = @{
         Name           = 'BuildHelpers'
         DependencyType = 'PSGalleryModule'
         Parameters     = @{
@@ -47,7 +23,31 @@
         Tags           = 'Bootstrap'
     }
 
-    PSDeploy          = @{
+    Pester           = @{
+        Name           = 'Pester'
+        DependencyType = 'PSGalleryModule'
+        Parameters     = @{
+            Repository         = 'PSGallery'
+            SkipPublisherCheck = $true
+        }
+        Target         = 'CurrentUser'
+        Version        = '4.7.3'
+        Tags           = 'Test'
+    }
+
+    PSScriptAnalyzer = @{
+        Name           = 'PSScriptAnalyzer'
+        DependencyType = 'PSGalleryModule'
+        Parameters     = @{
+            Repository         = 'PSGallery'
+            SkipPublisherCheck = $true
+        }
+        Target         = 'CurrentUser'
+        Version        = '1.18.0'
+        Tags           = 'Test'
+    }
+
+    PSDeploy         = @{
         Name           = 'PSDeploy'
         DependencyType = 'PSGalleryModule'
         Parameters     = @{
@@ -59,7 +59,7 @@
         Tags           = 'Deploy'
     }
 
-    Platyps           = @{
+    Platyps          = @{
         Name           = 'Platyps'
         DependencyType = 'PSGalleryModule'
         Parameters     = @{
