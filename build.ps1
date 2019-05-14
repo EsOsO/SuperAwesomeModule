@@ -1,16 +1,34 @@
+[CmdletBinding()]
 param (
-    [string[]] $Task = 'Default'
+    [Parameter()]
+    [System.String[]]
+    $TaskList = 'Default',
+
+    [Parameter()]
+    [System.Collections.Hashtable]
+    $Parameters,
+
+    [Parameter()]
+    [System.Collections.Hashtable]
+    $Properties
 )
 
-# Grab nuget bits, install modules, set build variables, start build.
-Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
+Write-Verbose -Message ("Beginning '{0}' process..." -f ($TaskList -join ','))
 
-Install-Module Psake, PSDeploy, BuildHelpers, platyPS, PSScriptAnalyzer -Force
-Install-Module Pester -Force -SkipPublisherCheck
-Import-Module Psake, BuildHelpers, platyPS, PSScriptAnalyzer
+# Bootstrap the environment
+$null = Get-PackageProvider -Name NuGet -ForceBootstrap
 
-Set-BuildEnvironment
+# Install PSake module if it is not already installed
+if (-not (Get-Module -Name PSDepend -ListAvailable))
+{
+    Install-Module -Name PSDepend -Scope CurrentUser -Force -Confirm:$false
+}
 
-Invoke-psake -buildFile .\build.psake.ps1 -taskList $Task -nologo
+# Install build dependencies required for Init task
+Import-Module -Name PSDepend
+Invoke-PSDepend -Path $PSScriptRoot -Force -Import -Install -Tags 'Bootstrap'
 
-exit ([int] (-not $psake.build_success))
+# Execute the PSake tasts from the psakefile.ps1
+Invoke-Psake -buildFile (Join-Path -Path $PSScriptRoot -ChildPath 'psakefile.ps1') -nologo @PSBoundParameters
+
+exit ( [int]( -not $psake.build_success ) )
