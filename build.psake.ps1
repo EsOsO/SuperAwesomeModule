@@ -23,3 +23,7 @@ Task Init {
     $PSVersionTable
     "`n"
 }
+
+Task Test -Depends Init {
+    'Running Tests'
+}
