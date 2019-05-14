@@ -44,5 +44,7 @@ Task Test -Depends Init {
         -CodeCoverageOutputFile $CodeCoverageFile `
         -CodeCoverageOutputFileFormat 'JaCoCo'
 
-    Export-CodeCovIoJson -CodeCoverage $res.CodeCoverage -RepoRoot $pwd -Path $CodeCoverageJson
+    if ($res.CodeCoverage) {
+        Export-CodeCovIoJson -CodeCoverage $res.CodeCoverage -RepoRoot $PWD -Path $CodeCoverageJson
+    }
 }

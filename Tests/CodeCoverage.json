@@ -1,0 +1,36 @@
+{
+    "coverage":  {
+                     "SuperAwesomeModule/public/Get-SuperAwesomeFunction.ps1":  [
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    "1"
+                                                                                ]
+                 },
+    "messages":  {
+                     "SuperAwesomeModule/public/Get-SuperAwesomeFunction.ps1":  {
+
+                                                                                }
+                 }
+}
