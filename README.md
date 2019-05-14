@@ -1,6 +1,13 @@
 # SuperAwesomeModule
 
-Testing out CI/CD
+This module will provide a basic scaffolding template for powershell module authors with these features out of the box:
+
+* Github repo health best practices
+* SemVer versioning (using gitversion)
+* Azure Pipelines for CI/CD
+* Powershell Gallery publishing
+* ReadTheDocs documentation
+* Codecov.io code coverage
 
 ## Installation
 
@@ -8,7 +15,7 @@ Testing out CI/CD
 
 ## Maintaner
 
-- Massimo Bonvicini (@EsOsO)
+* Massimo Bonvicini (@EsOsO)
 
 ## License
 
