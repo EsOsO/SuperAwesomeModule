@@ -26,4 +26,23 @@ Task Init {
 
 Task Test -Depends Init {
     'Running Tests'
+    Invoke-PSDepend -Path $env:BHProjectPath -Force -Import -Install -Tags 'Test'
+
+    # Execute tests
+    $TestScriptsPath = Join-Path -Path $env:BHProjectPath -ChildPath 'Tests'
+    $TestResultsFile = Join-Path -Path $TestScriptsPath -ChildPath 'TestResults.xml'
+    $CodeCoverageFile = Join-Path -Path $TestScriptsPath -ChildPath 'CodeCoverage.xml'
+    $CodeCoverageJson = Join-Path -Path $TestScriptsPath -ChildPath 'CodeCoverage.json'
+    $CodeCoverageSource = Get-ChildItem -Path (Join-Path -Path $env:BHModulePath -ChildPath '*.ps1') -Recurse
+    $testResults = Invoke-Pester `
+        -Script $TestScriptsPath `
+        -OutputFormat NUnitXml `
+        -OutputFile $TestResultsFile `
+        -PassThru `
+        -ExcludeTag Incomplete `
+        -CodeCoverage $CodeCoverageSource `
+        -CodeCoverageOutputFile $CodeCoverageFile `
+        -CodeCoverageOutputFileFormat 'JaCoCo'
+
+    Export-CodeCovIoJson -CodeCoverage $res.CodeCoverage -RepoRoot $pwd -Path $CodeCoverageJson
 }

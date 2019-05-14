@@ -1,6 +1,6 @@
 jobs:
   - job: build_powershell_win2016
-    displayName: "Powrshell v5.x - Windows 2016"
+    displayName: "Powershell v5.x - Windows 2016"
     pool:
       vmImage: vs2017-win2016
     steps:
@@ -12,3 +12,7 @@ jobs:
         testResultsFiles: '**/Tests/TestResults.xml'
         testRunTitle: 'PS_Win2016'
       displayName: 'Publish Test Results'
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'JaCoCo'
+        summaryFileLocation: '**/Tests/CodeCoverage.xml'

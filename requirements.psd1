@@ -35,6 +35,18 @@
         Tags           = 'Test'
     }
 
+    PsCodeCovIo        = @{
+        Name           = 'PsCodeCovIo'
+        DependencyType = 'PSGalleryModule'
+        Parameters     = @{
+            Repository         = 'PSGallery'
+            SkipPublisherCheck = $true
+        }
+        Target         = 'CurrentUser'
+        Version        = '1.0.1'
+        Tags           = 'Test'
+    }
+
     PSScriptAnalyzer = @{
         Name           = 'PSScriptAnalyzer'
         DependencyType = 'PSGalleryModule'
