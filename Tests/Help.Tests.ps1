@@ -1,15 +1,9 @@
-$ModuleName = 'SuperAwesomeModule'
+Remove-Module $env:BHProjectName -Force -ErrorAction SilentlyContinue
+Import-Module $env:BHPSModuleManifest -Force
 
-Remove-Module $ModuleName -Force -ErrorAction SilentlyContinue
+Describe ('Help tests for {0}' -f $env:BHProjectName) -Tags Build {
 
-$ManifestPath = '{0}\..\{1}\{1}.psd1' -f $PSScriptRoot, $ModuleName
-$ChangeLogPath = '{0}\..\CHANGELOG.md' -f $PSScriptRoot
-
-Import-Module $ManifestPath -Force
-
-Describe "Help tests for $ModuleName" -Tags Build {
-
-    $Functions = Get-Command -Module $ModuleName -CommandType Function
+    $Functions = Get-Command -Module $env:BHProjectName -CommandType Function
 
     foreach ($Function in $Functions) {
         $help = Get-Help $Function.name

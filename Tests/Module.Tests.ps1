@@ -1,21 +1,15 @@
-$ModuleName = 'SuperAwesomeModule'
+Remove-Module $env:BHProjectName -Force -ErrorAction SilentlyContinue
+Import-Module $env:BHPSModuleManifest -Force
 
-Remove-Module $ModuleName -Force -ErrorAction SilentlyContinue
-
-$ManifestPath = '{0}\..\{1}\{1}.psd1' -f $PSScriptRoot, $ModuleName
-$ChangeLogPath = '{0}\..\CHANGELOG.md' -f $PSScriptRoot
-
-Import-Module $ManifestPath -Force
-
-Describe -Tags Build, Unit "$ModuleName manifest" {
+Describe -Tags Build, Unit ('{0} manifest' -f $env:BHProjectName) {
     $Script:Manifest = $null
 
     It 'has a valid manifest' {
-        { $script:Manifest = Test-ModuleManifest -Path $ManifestPath -ErrorAction Stop } | Should -Not -Throw
+        { $script:Manifest = Test-ModuleManifest -Path $env:BHPSModuleManifest -ErrorAction Stop } | Should -Not -Throw
     }
 
     It 'has a valid name in the manifest' {
-        $script:Manifest.Name | Should -Be $ModuleName
+        $script:Manifest.Name | Should -Be $env:BHProjectName
     }
 
     It 'has a valid guid in the manifest' {
