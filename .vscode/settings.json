@@ -2,5 +2,9 @@
     "files.trimTrailingWhitespace": true,
     "powershell.scriptAnalysis.settingsPath": ".vscode/ScriptAnalyzerSettings.psd1",
     "powershell.debugging.createTemporaryIntegratedConsole": true,
-    "powershell.integratedConsole.showOnStartup": false
+    "powershell.integratedConsole.showOnStartup": false,
+    "markdownlint.config": {
+        "MD041": false,
+        "MD013": true
+    }
 }
