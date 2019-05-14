@@ -8,7 +8,7 @@ foreach ($Function in $AllFunctions) {
         . $Function.FullName
     }
     catch {
-        throw "Unable to dot source [$($import.FullName)]"
+        throw "Unable to dot source [$($Function.FullName)]"
     }
 }
 
