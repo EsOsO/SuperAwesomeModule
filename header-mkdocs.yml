@@ -1,9 +1,9 @@
 site_name: SuperAwesomeModule Documentation
 site_description: Super Awesome Module
 site_author: Massimo Bonvicini
-repo_url: https://github.com/Massimo Bonvicini/SuperAwesomeModule
+repo_url: https://github.com/EsOsO/SuperAwesomeModule
 edit_uri: edit/master/docs/
-copyright: "SuperAwesomeModule is licensed under the <a href='https://github.com/Massimo Bonvicini/SuperAwesomeModule/raw/master/docs/LICENSE'>MIT license</a>"
+copyright: "SuperAwesomeModule is licensed under the <a href='https://github.com/EsOsO/SuperAwesomeModule/blob/master/docs/LICENSE.md'>MIT license</a>"
 theme: readthedocs
 nav:
   - Home: index.md
@@ -11,5 +11,5 @@ nav:
   - About:
     - Changelog: CHANGELOG.md
     - Contributing: CONTRIBUTING.md
-    - License: LICENSE
+    - License: LICENSE.md
   - Functions:
