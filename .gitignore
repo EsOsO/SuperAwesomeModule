@@ -1,3 +1,2 @@
 .gitconfig
-TestResults*
-BuildOutput/
+*.xml
