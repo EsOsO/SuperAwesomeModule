@@ -1,3 +1,4 @@
+
 jobs:
   - job: build_powershell_win2016
     displayName: "Powershell v5.x - Windows 2016"
@@ -16,3 +17,5 @@ jobs:
       inputs:
         codeCoverageTool: 'JaCoCo'
         summaryFileLocation: '**/Tests/CodeCoverage.xml'
+    - bash: bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN) -f Tests/CodeCoverage.json
+      displayName: 'Upload code coverage to CodeCove.io'
