@@ -1,6 +1,7 @@
 
 jobs:
-  - job: Build module
+  - job: build
+    displayName: Build Module
     pool:
       vmImage: vs2017-win2016
     steps:
@@ -11,7 +12,8 @@ jobs:
       inputs:
         pathtoPublish: $(System.DefaultWorkingDirectory)
         artifactName: Module
-  - job: Test
+  - job: test
+    displayName: Test Module
     pool:
       vmImage: vs2017-win2016
     steps:
@@ -21,5 +23,5 @@ jobs:
       inputs:
         artifactName: Module
         downloadPath: $(System.DefaultWorkingDirectory)
-    dependsOn: Build
+    dependsOn: build
     condition: succeeded()
