@@ -1,4 +1,6 @@
 Properties {
+    Set-BuildEnvironment -Force
+
     $Timestamp = Get-Date -uformat "%Y%m%d-%H%M%S"
     $PSVersion = $PSVersionTable.PSVersion.Major
     $BuildFolder = Join-Path -Path $env:BHBuildOutput -ChildPath $env:BHProjectName
@@ -9,7 +11,6 @@ FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
 Task Default -Depends Init
 
 Task Init {
-    Set-BuildEnvironment -Force
     Set-Location -Path $env:BHProjectPath
 
     'Build System Details:'
