@@ -46,5 +46,7 @@ Task Test -Depends Init {
 
     if ($res.CodeCoverage) {
         Export-CodeCovIoJson -CodeCoverage $res.CodeCoverage -RepoRoot $PWD -Path $CodeCoverageJson
+        Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+        bash codecov.sh -f $CodeCoverageJson
     }
 }
