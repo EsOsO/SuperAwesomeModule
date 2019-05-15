@@ -34,7 +34,7 @@ Task Test -Depends Init {
     $CodeCoverageFile = Join-Path -Path $TestScriptsPath -ChildPath 'CodeCoverage.xml'
     $CodeCoverageJson = Join-Path -Path $TestScriptsPath -ChildPath 'CodeCoverage.json'
     $CodeCoverageSource = Get-ChildItem -Path (Join-Path -Path $env:BHModulePath -ChildPath '*.ps1') -Recurse
-    $testResults = Invoke-Pester `
+    $TestResults = Invoke-Pester `
         -Script $TestScriptsPath `
         -OutputFormat NUnitXml `
         -OutputFile $TestResultsFile `
@@ -44,7 +44,7 @@ Task Test -Depends Init {
         -CodeCoverageOutputFile $CodeCoverageFile `
         -CodeCoverageOutputFileFormat 'JaCoCo'
 
-    if ($res.CodeCoverage) {
+    if ($TestResults.CodeCoverage) {
         Export-CodeCovIoJson -CodeCoverage $res.CodeCoverage -RepoRoot $PWD -Path $CodeCoverageJson
         Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
         bash codecov.sh -f $CodeCoverageJson
