@@ -1,6 +1,6 @@
 
 jobs:
-  - job: build_powershell_win2016
+  - job: test_powershell_win2016
     displayName: "Powershell v5.x - Windows 2016"
     pool:
       vmImage: vs2017-win2016
@@ -8,14 +8,36 @@ jobs:
     - powershell: ./build.ps1 -Task Test -Verbose
       displayName: 'Tests and Code Coverage'
     - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
       inputs:
         testRunner: 'NUnit'
         testResultsFiles: '**/Tests/TestResults.xml'
         testRunTitle: 'PS_Win2016'
-      displayName: 'Publish Test Results'
     - task: PublishCodeCoverageResults@1
+      displayName: 'Publish Code Coverage'
       inputs:
         codeCoverageTool: 'JaCoCo'
         summaryFileLocation: '**/Tests/CodeCoverage.xml'
     - bash: bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN) -f Tests/CodeCoverage.json
-      displayName: 'Upload code coverage to CodeCove.io'
+      displayName: 'Publish Code Coverage to CodeCove.io'
+
+  - job: test_pwsh_win2016
+    displayName: "Powershell Core - Windows 2016"
+    pool:
+      vmImage: vs2017-win2016
+    steps:
+    - pwsh: ./build.ps1 -Task Test -Verbose
+      displayName: 'Tests and Code Coverage'
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testRunner: 'NUnit'
+        testResultsFiles: '**/Tests/TestResults.xml'
+        testRunTitle: 'PS_Win2016'
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish Code Coverage'
+      inputs:
+        codeCoverageTool: 'JaCoCo'
+        summaryFileLocation: '**/Tests/CodeCoverage.xml'
+    - bash: bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN) -f Tests/CodeCoverage.json
+      displayName: 'Publish Code Coverage to CodeCove.io'
