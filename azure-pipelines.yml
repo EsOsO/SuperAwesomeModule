@@ -42,7 +42,7 @@ jobs:
     - bash: bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN) -f Tests/CodeCoverage.json
       displayName: 'Publish Code Coverage to CodeCove.io'
 
-  - job: test_pwsh_macOS-10.14
+  - job: test_pwsh_macOS
     displayName: "Powershell Core - macOS 10.14"
     pool:
       vmImage: macOS-10.14
@@ -63,7 +63,7 @@ jobs:
     - bash: bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN) -f Tests/CodeCoverage.json
       displayName: 'Publish Code Coverage to CodeCove.io'
 
-  - job: test_pwsh_ubuntu-16.04
+  - job: test_pwsh_ubuntu
     displayName: "Powershell Core - Ubuntu 16.04"
     pool:
       vmImage: ubuntu-16.04
