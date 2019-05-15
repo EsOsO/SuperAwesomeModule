@@ -1,4 +1,3 @@
-Set-StrictMode -Version Latest
 Properties {
     $Timestamp = Get-Date -uformat "%Y%m%d-%H%M%S"
     $PSVersion = $PSVersionTable.PSVersion.Major
