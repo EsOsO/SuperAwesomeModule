@@ -1,86 +1,25 @@
 
 jobs:
-  - job: test_powershell_win2016
-    displayName: "Powershell v5.x - Windows 2016"
+  - job: Build module
     pool:
       vmImage: vs2017-win2016
     steps:
-    - powershell: ./build.ps1 -Task Test -Verbose
-      displayName: 'Tests and Code Coverage'
-    - task: PublishTestResults@2
-      displayName: 'Publish Test Results'
+    - powershell: ./build.ps1 -Task Build -Verbose
+      displayName: 'Build Module Artifact'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Build Artifact'
       inputs:
-        testRunner: 'NUnit'
-        testResultsFiles: '**/Tests/TestResults.xml'
-        testRunTitle: 'PS_v5.x_Win2016'
-    - task: PublishCodeCoverageResults@1
-      displayName: 'Publish Code Coverage'
-      inputs:
-        codeCoverageTool: 'JaCoCo'
-        summaryFileLocation: '**/Tests/CodeCoverage.xml'
-    - bash: bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN) -f Tests/CodeCoverage.json
-      displayName: 'Publish Code Coverage to CodeCove.io'
-
-  - job: test_pwsh_win2016
-    displayName: "Powershell Core - Windows 2016"
+        pathtoPublish: $(System.DefaultWorkingDirectory)
+        artifactName: Module
+  - job: Test
     pool:
       vmImage: vs2017-win2016
     steps:
-    - pwsh: ./build.ps1 -Task Test -Verbose
-      displayName: 'Tests and Code Coverage'
-    - task: PublishTestResults@2
-      displayName: 'Publish Test Results'
+    - checkout: none #skip checking out the default repository resource
+    - task: DownloadBuildArtifacts@0
+      displayName: 'Download Build Artifacts'
       inputs:
-        testRunner: 'NUnit'
-        testResultsFiles: '**/Tests/TestResults.xml'
-        testRunTitle: 'PS_Core_Win2016'
-    - task: PublishCodeCoverageResults@1
-      displayName: 'Publish Code Coverage'
-      inputs:
-        codeCoverageTool: 'JaCoCo'
-        summaryFileLocation: '**/Tests/CodeCoverage.xml'
-    - bash: bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN) -f Tests/CodeCoverage.json
-      displayName: 'Publish Code Coverage to CodeCove.io'
-
-  - job: test_pwsh_macOS
-    displayName: "Powershell Core - macOS 10.14"
-    pool:
-      vmImage: macOS-10.14
-    steps:
-    - pwsh: ./build.ps1 -Task Test -Verbose
-      displayName: 'Tests and Code Coverage'
-    - task: PublishTestResults@2
-      displayName: 'Publish Test Results'
-      inputs:
-        testRunner: 'NUnit'
-        testResultsFiles: '**/Tests/TestResults.xml'
-        testRunTitle: 'PS_Core_macOS-10.14'
-    - task: PublishCodeCoverageResults@1
-      displayName: 'Publish Code Coverage'
-      inputs:
-        codeCoverageTool: 'JaCoCo'
-        summaryFileLocation: '**/Tests/CodeCoverage.xml'
-    - bash: bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN) -f Tests/CodeCoverage.json
-      displayName: 'Publish Code Coverage to CodeCove.io'
-
-  - job: test_pwsh_ubuntu
-    displayName: "Powershell Core - Ubuntu 16.04"
-    pool:
-      vmImage: ubuntu-16.04
-    steps:
-    - pwsh: ./build.ps1 -Task Test -Verbose
-      displayName: 'Tests and Code Coverage'
-    - task: PublishTestResults@2
-      displayName: 'Publish Test Results'
-      inputs:
-        testRunner: 'NUnit'
-        testResultsFiles: '**/Tests/TestResults.xml'
-        testRunTitle: 'PS_Core_ubuntu-16.04'
-    - task: PublishCodeCoverageResults@1
-      displayName: 'Publish Code Coverage'
-      inputs:
-        codeCoverageTool: 'JaCoCo'
-        summaryFileLocation: '**/Tests/CodeCoverage.xml'
-    - bash: bash <(curl -s https://codecov.io/bash) -t $(CODECOV_TOKEN) -f Tests/CodeCoverage.json
-      displayName: 'Publish Code Coverage to CodeCove.io'
-
+        artifactName: Module
+        downloadPath: $(System.DefaultWorkingDirectory)
+    dependsOn: Build
+    condition: succeeded()
