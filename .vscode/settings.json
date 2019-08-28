@@ -5,6 +5,7 @@
     "powershell.integratedConsole.showOnStartup": false,
     "markdownlint.config": {
         "MD041": false,
-        "MD013": true
+        "MD013": true,
+        "MD047": false
     }
 }
