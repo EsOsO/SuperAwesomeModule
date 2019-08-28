@@ -11,6 +11,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+      - name: PSScriptAnalyzer
+        uses: devblackops/github-action-psscriptanalyzer@v2.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PSSCRIPTANALYZER_ROOT: './Logging'
+          PSSCRIPTANALYZER_SETTINGS_PATH: './.vscode/ScriptAnalyzerSettings.psd1'
       - name: Run Pester tests
         shell: pwsh
         run: ./build.ps1 -Task Test
@@ -22,6 +28,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+      - name: PSScriptAnalyzer
+        uses: devblackops/github-action-psscriptanalyzer@v2.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PSSCRIPTANALYZER_ROOT: './Logging'
+          PSSCRIPTANALYZER_SETTINGS_PATH: './.vscode/ScriptAnalyzerSettings.psd1'
       - name: Run Pester tests
         shell: powershell
         run: .\build.ps1 -Task Test
