@@ -1,27 +1,22 @@
-Remove-Module SuperAwesomeModule -Force -ErrorAction SilentlyContinue
+Remove-Module $env:BHProjectName -Force -ErrorAction SilentlyContinue
+Import-Module $env:BHPSModuleManifest -Force
 
-$ManifestPath   = '{0}\..\SuperAwesomeModule\SuperAwesomeModule.psd1' -f $PSScriptRoot
-$ChangeLogPath  = '{0}\..\CHANGELOG.md' -f $PSScriptRoot
+Describe -Tags Build, Unit ('{0} manifest' -f $env:BHProjectName) {
+    $Script:Manifest = $null
 
-Import-Module $ManifestPath -Force
-
-Describe -Tags Build, Unit 'SuperAwesomeModule manifest' {
-    $script:Manifest = $null
     It 'has a valid manifest' {
-        {
-            $script:Manifest = Test-ModuleManifest -Path $ManifestPath -ErrorAction Stop -WarningAction SilentlyContinue
-        } | Should Not Throw
+        { $script:Manifest = Test-ModuleManifest -Path $env:BHPSModuleManifest -ErrorAction Stop } | Should -Not -Throw
     }
 
     It 'has a valid name in the manifest' {
-        $script:Manifest.Name | Should Be SuperAwesomeModule
+        $script:Manifest.Name | Should -Be $env:BHProjectName
     }
 
     It 'has a valid guid in the manifest' {
-        $script:Manifest.Guid | Should Be '6b8638dc-81f6-4a78-978e-81402faa2815'
+        $script:Manifest.Guid | Should -Match '^[a-z0-9]{8}-([a-z0-9]{4}-){3}[a-z0-9]{12}$'
     }
 
     It 'has a valid version in the manifest' {
-        $script:Manifest.Version -as [Version] | Should Not BeNullOrEmpty
+        $script:Manifest.Version -as [Version] | Should -Not -BeNullOrEmpty
     }
 }

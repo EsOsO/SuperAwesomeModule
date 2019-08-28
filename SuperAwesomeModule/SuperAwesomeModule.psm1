@@ -1,13 +1,15 @@
 # Dot source public/private functions
-$public = @(Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath 'public/*.ps1') -Recurse -ErrorAction Stop)
-$private = @(Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath 'private/*.ps1') -Recurse -ErrorAction Stop)
-foreach ($import in @($public + $private)) {
+$PublicFunctions = @(Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath 'public/*.ps1') -Recurse -ErrorAction SilentlyContinue)
+$PrivateFunctions = @(Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath 'private/*.ps1') -Recurse -ErrorAction SilentlyContinue)
+
+$AllFunctions = $PublicFunctions + $PrivateFunctions
+foreach ($Function in $AllFunctions) {
     try {
-        . $import.FullName
+        . $Function.FullName
     }
     catch {
-        throw "Unable to dot source [$($import.FullName)]"
+        throw "Unable to dot source [$($Function.FullName)]"
     }
 }
 
-Export-ModuleMember -Function Get-SuperAwesomeFunction
+Export-ModuleMember -Function $PublicFunctions.BaseName

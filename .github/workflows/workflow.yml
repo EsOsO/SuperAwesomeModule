@@ -1,0 +1,27 @@
+name: Tests
+on: [push]
+jobs:
+  pwsh_tests:
+    name: PowerShell Core tests on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Run Pester tests
+        shell: pwsh
+        run: ./build.ps1 -Task Test
+
+  powershell_tests:
+    name: PowerShell tests on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Run Pester tests
+        shell: powershell
+        run: .\build.ps1 -Task Test

@@ -1,62 +1,66 @@
-function Update-AdditionalReleaseArtifact {
-    param(
-        [string] $Version
-    )
-
-    Update-Metadata -Path $env:BHPSModuleManifest -PropertyName ModuleVersion -Value $Version
-}
-
 Properties {
-    $GitVersion = gitversion | ConvertFrom-Json
-    $Artifact = '{0}-{1}.zip' -f $env:BHProjectName.ToLower(), $GitVersion.SemVer
-    $ArtifactPath = Join-Path $env:BHBuildOutput $Artifact
+    Set-BuildEnvironment -Force
+
+    $Timestamp = Get-Date -uformat "%Y%m%d-%H%M%S"
+    $PSVersion = $PSVersionTable.PSVersion.Major
+    $BuildFolder = Join-Path -Path $env:BHBuildOutput -ChildPath $env:BHProjectName
 }
 
 FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
 
-Task Default -Depends Build
+Task Default -Depends Init
 
 Task Init {
-    Write-Host ('Working folder: {0}' -f $PWD)
-    Write-Host ('GitVersion: {0}' -f $GitVersion.SemVer)
-    Write-Host ('Git Branch: {0}' -f $GitVersion.BranchName)
+    Set-Location -Path $env:BHProjectPath
+
+    'Build System Details:'
+    Get-Item -Path ENV:BH*
+    "`n"
+
+    'Other Environment Variables:'
+    Get-ChildItem -Path ENV:
+    "`n"
+
+    'PowerShell Details:'
+    $PSVersionTable
+    "`n"
 }
 
-Task IncrementVersion -Depends Init {
-    trap {
-        Pop-Location
-        Write-Error "$_"
-        exit 1
+Task Clean -Depends Init {
+    if (Test-Path $env:BHBuildOutput) {
+        Remove-Item -Force -Recurse $env:BHBuildOutput -ErrorAction Ignore | Out-Null
     }
 
-    Push-Location $env:BHProjectPath
-
-    $PendingChanges = git status --porcelain
-    if ($null -ne $PendingChanges) {
-        throw 'You have pending changes, aborting release'
-    }
-
-    Exec {git fetch origin}
-    Exec {git checkout master}
-    Exec {git merge origin/master --ff-only}
-
-    Update-AdditionalReleaseArtifact -Version $GitVersion.MajorMinorPatch
-
-    $StableVersion = $GitVersion.MajorMinorPatch
-
-    Exec {git commit -am "Create release $StableVersion" --allow-empty}
-    Exec {git tag $StableVersion}
-
-    if ($LASTEXITCODE -ne 0) {
-        Exec {git reset --hard HEAD^}
-        throw 'No changes detected since last release'
-    }
-
-    Exec {git push origin master --tags}
-
-    Pop-Location
+    New-Item -Path $env:BHBuildOutput -ItemType Directory -Force | Out-Null
 }
 
-Task Build -Depends IncrementVersion {
-    Compress-Archive -Path $env:BHModulePath -DestinationPath $ArtifactPath
+Task Build -Depends Clean {
+    New-Item -Path $BuildFolder -ItemType Directory -Force | Out-Null
+
+    Get-ChildItem -Path $env:BHPSModulePath | Copy-Item -Destination $BuildFolder -Force -PassThru | ForEach-Object {'  Copy [.{0}]' -f $_.FullName.Replace($PSScriptRoot, '')}
+}
+
+Task Test -Depends Init {
+    'Running Tests'
+    Invoke-PSDepend -Path $env:BHProjectPath -Force -Import -Install -Tags 'Test'
+
+    # Execute tests
+    $TestScriptsPath = Join-Path -Path $env:BHProjectPath -ChildPath 'Tests'
+    $TestResultsFile = Join-Path -Path $TestScriptsPath -ChildPath 'TestResults.xml'
+    $CodeCoverageFile = Join-Path -Path $TestScriptsPath -ChildPath 'CodeCoverage.xml'
+    $CodeCoverageJson = Join-Path -Path $TestScriptsPath -ChildPath 'CodeCoverage.json'
+    $CodeCoverageSource = Get-ChildItem -Path (Join-Path -Path $env:BHModulePath -ChildPath '*.ps1') -Recurse
+    $TestResults = Invoke-Pester `
+        -Script $TestScriptsPath `
+        -OutputFormat NUnitXml `
+        -OutputFile $TestResultsFile `
+        -PassThru `
+        -ExcludeTag Incomplete `
+        -CodeCoverage $CodeCoverageSource `
+        -CodeCoverageOutputFile $CodeCoverageFile `
+        -CodeCoverageOutputFileFormat 'JaCoCo'
+
+        if ($TestResults.CodeCoverage) {
+            Export-CodeCovIoJson -CodeCoverage $TestResults.CodeCoverage -RepoRoot $PWD -Path $CodeCoverageJson
+        }
 }

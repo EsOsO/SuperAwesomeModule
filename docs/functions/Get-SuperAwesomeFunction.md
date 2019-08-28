@@ -1,3 +1,10 @@
+---
+external help file: SuperAwesomeModule-help.xml
+Module Name: SuperAwesomeModule
+online version: http://foo.bar/#help
+schema: 2.0.0
+---
+
 # Get-SuperAwesomeFunction
 
 ## SYNOPSIS

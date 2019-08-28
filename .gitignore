@@ -1,3 +1,3 @@
 .gitconfig
-TestResults*
-BuildOutput/
+*.xml
+./Tests/CodeCoverage.json
