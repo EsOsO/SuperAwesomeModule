@@ -1,6 +1,7 @@
 # SuperAwesomeModule
 
-This module will provide a basic scaffolding template for powershell module authors with these features out of the box:
+This module will provide a basic scaffolding template for powershell module
+authors with these features out of the box:
 
 * Github repo health best practices
 * SemVer versioning (using gitversion)
