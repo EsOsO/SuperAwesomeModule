@@ -15,9 +15,14 @@ jobs:
             shell: powershell
 
     steps:
+      - name: Dump matrix content
+        env:
+          MATRIX_CONTENT: ${{ toJson(matrix) }}
+        run: echo "$MATRIX_CONTENT"
+
       - name: Checkout
         uses: actions/checkout@v1
 
       - name: Run Pester tests
-        shell: ${{ matrix.shell }}
+        shell: pwsh
         run: ./build.ps1 -Task Test
