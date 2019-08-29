@@ -2,7 +2,7 @@ name: Tests
 on: [push]
 jobs:
   pwsh_tests:
-    name: Module tests on ${{ matrix.os }} - ${{ matrix.powershell }}
+    name: Module tests on ${{ matrix.os }} - ${{ matrix.shell }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

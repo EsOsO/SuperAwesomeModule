@@ -1,4 +1,10 @@
 @{
+    PSDependOptions = @{
+        Parameters = @{
+            Scope = 'CurrentUser'
+        }
+    }
+
     'psake'            = 'latest'
     'PSDeploy'         = 'latest'
     'BuildHelpers'     = 'latest'
