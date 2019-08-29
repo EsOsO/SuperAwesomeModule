@@ -1,22 +1,11 @@
-[CmdletBinding()]
 param (
-    [Parameter()]
-    [System.String[]]
-    $Task = 'Default',
-
-    [Parameter()]
-    [System.Collections.Hashtable]
-    $Parameters,
-
-    [Parameter()]
-    [System.Collections.Hashtable]
-    $Properties
+    [string[]] $Task = 'Default'
 )
 
 Write-Verbose -Message ('Beginning "{0}" process...' -f ($Task -join ','))
 
 # Bootstrap the environment
-$null = Get-PackageProvider -Name NuGet -ForceBootstrap
+Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
 
 # Install PSDepend module if it is not already installed
 if (-not (Get-Module -Name PSDepend -ListAvailable)) {
@@ -25,9 +14,11 @@ if (-not (Get-Module -Name PSDepend -ListAvailable)) {
 
 # Install build dependencies required for Init task
 Import-Module -Name PSDepend
-Invoke-PSDepend -Path $PSScriptRoot -Force -Import -Install -Tags 'Bootstrap'
+Invoke-PSDepend -Path $PSScriptRoot -Force -Import -Install
+
+Set-BuildEnvironment -Force
 
 # Execute the PSake tasts from the psakefile.ps1
-Invoke-Psake -buildFile (Join-Path -Path $PSScriptRoot -ChildPath 'build.psake.ps1') -nologo @PSBoundParameters
+Invoke-Psake -buildFile (Join-Path -Path $PSScriptRoot -ChildPath 'build.psake.ps1') -nologo
 
 exit ( [int]( -not $psake.build_success ) )

@@ -1,6 +1,4 @@
 Properties {
-    Set-BuildEnvironment -Force
-
     $Timestamp = Get-Date -uformat "%Y%m%d-%H%M%S"
     $PSVersion = $PSVersionTable.PSVersion.Major
     $BuildFolder = Join-Path -Path $env:BHBuildOutput -ChildPath $env:BHProjectName
@@ -8,7 +6,7 @@ Properties {
 
 FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
 
-Task Default -Depends Init
+Task Default -Depends Test
 
 Task Init {
     Set-Location -Path $env:BHProjectPath
@@ -26,24 +24,11 @@ Task Init {
     "`n"
 }
 
-Task Clean -Depends Init {
-    if (Test-Path $env:BHBuildOutput) {
-        Remove-Item -Force -Recurse $env:BHBuildOutput -ErrorAction Ignore | Out-Null
-    }
-
-    New-Item -Path $env:BHBuildOutput -ItemType Directory -Force | Out-Null
+Task StaticAnalysis -Depends Init {
+    Invoke-ScriptAnalyzer -Path $env:BHModulePath -Settings PSGallery -Recurse
 }
 
-Task Build -Depends Clean {
-    New-Item -Path $BuildFolder -ItemType Directory -Force | Out-Null
-
-    Get-ChildItem -Path $env:BHPSModulePath | Copy-Item -Destination $BuildFolder -Force -PassThru | ForEach-Object {'  Copy [.{0}]' -f $_.FullName.Replace($PSScriptRoot, '')}
-}
-
-Task Test -Depends Init {
-    'Running Tests'
-    Invoke-PSDepend -Path $env:BHProjectPath -Force -Import -Install -Tags 'Test'
-
+Task Test -Depends StaticAnalysis {
     # Execute tests
     $TestScriptsPath = Join-Path -Path $env:BHProjectPath -ChildPath 'Tests'
     $TestResultsFile = Join-Path -Path $TestScriptsPath -ChildPath 'TestResults.xml'
@@ -59,8 +44,4 @@ Task Test -Depends Init {
         -CodeCoverage $CodeCoverageSource `
         -CodeCoverageOutputFile $CodeCoverageFile `
         -CodeCoverageOutputFileFormat 'JaCoCo'
-
-        if ($TestResults.CodeCoverage) {
-            Export-CodeCovIoJson -CodeCoverage $TestResults.CodeCoverage -RepoRoot $PWD -Path $CodeCoverageJson
-        }
 }
