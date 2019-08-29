@@ -9,7 +9,9 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         powershell: [pwsh, powershell]
         exclude:
-          - os: [ubuntu-latest, macOs-latest]
+          - os: ubuntu-latest
+            powershell: powershell
+          - os: macOS-latest
             powershell: powershell
 
     steps:
