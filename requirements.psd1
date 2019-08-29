@@ -1,13 +1,36 @@
 @{
-    PSDependOptions = @{
+    'psake' = @{
+        Version = 'latest'
         Parameters = @{
             Scope = 'CurrentUser'
         }
     }
 
-    'psake'            = 'latest'
-    'PSDeploy'         = 'latest'
-    'BuildHelpers'     = 'latest'
-    'Pester'           = 'latest'
-    'PSScriptAnalyzer' = '1.18.1'
+    'PSDeploy' = @{
+        Version = 'latest'
+        Parameters = @{
+            Scope = 'CurrentUser'
+        }
+    }
+
+    'BuildHelpers' = @{
+        Version = 'latest'
+        Parameters = @{
+            Scope = 'CurrentUser'
+        }
+    }
+
+    'Pester' = @{
+        Version = 'latest'
+        Parameters = @{
+            Scope = 'CurrentUser'
+        }
+    }
+
+    'PSScriptAnalyzer' = @{
+        Version = '1.18.1'
+        Parameters = @{
+            Scope = 'CurrentUser'
+        }
+    }
 }
