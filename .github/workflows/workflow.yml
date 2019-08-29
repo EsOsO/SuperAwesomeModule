@@ -8,11 +8,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         shell: [pwsh, powershell]
-        exclude:
-          - os: ubuntu-latest
-            shell: powershell
-          - os: macOS-latest
-            shell: powershell
 
     steps:
       - name: Checkout
