@@ -7,17 +7,17 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        powershell: [pwsh, powershell]
+        shell: [pwsh, powershell]
         exclude:
           - os: ubuntu-latest
-            powershell: powershell
+            shell: powershell
           - os: macOS-latest
-            powershell: powershell
+            shell: powershell
 
     steps:
       - name: Checkout
         uses: actions/checkout@v1
 
       - name: Run Pester tests
-        shell: ${{ matrix.powershell }}
+        shell: ${{ matrix.shell }}
         run: ./build.ps1 -Task Test
