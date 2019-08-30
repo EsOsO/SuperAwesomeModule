@@ -17,6 +17,9 @@
 
     'Pester' = @{
         Version = 'latest'
+        Parameters = @{
+            SkipPublisherCheck = $true
+        }
     }
 
     'PSScriptAnalyzer' = @{
