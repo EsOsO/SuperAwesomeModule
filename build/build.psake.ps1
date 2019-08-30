@@ -1,8 +1,10 @@
 Properties {
     $Timestamp = Get-Date -uformat "%Y%m%d-%H%M%S"
     $PSVersion = $PSVersionTable.PSVersion.Major
-    $Version = & gitversion | ConvertFrom-Json | select -ExpandProperty MajorMinorPatch
-    $BuildFolder = '{0}\{1}-{2}' -f $env:BHBuildOutput, $env:BHProjectName, $Version
+    $Version = & gitversion | ConvertFrom-Json
+    $ModuleVersion = $Version.MajorMinorPatch
+    $SemVer = $Version.SemVer
+    $BuildFolder = '{0}\{1}-{2}' -f $env:BHBuildOutput, $env:BHProjectName, $SemVer
     $RequiredCodeCoverage = .8
 }
 
@@ -28,8 +30,8 @@ Task Clean -Depends Init {
 }
 
 Task IncreaseVersion -Depends Clean {
-    "Setting version [$Version]"
-    Update-Metadata -Path $ENV:BHPSModuleManifest -PropertyName ModuleVersion -Value $Version
+    "Setting version [$ModuleVersion]"
+    Update-Metadata -Path $ENV:BHPSModuleManifest -PropertyName ModuleVersion -Value $ModuleVersion
 }
 
 Task ExportFunctions -Depends IncreaseVersion {
@@ -100,7 +102,7 @@ Task Test -Depends StaticAnalysis {
 
 Task Package -Depends Test {
     'Packing module'
-    Compress-Archive -Path $BuildFolder -DestinationPath ('{0}\{1}-{2}.zip' -f $ENV:BHBuildOutput, $ENV:BHProjectName, $Version)
+    Compress-Archive -Path $BuildFolder -DestinationPath ('{0}\{1}-{2}.zip' -f $ENV:BHBuildOutput, $ENV:BHProjectName, $SemVer)
 }
 
 Task Release -Depends Package {
