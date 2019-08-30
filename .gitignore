@@ -1,4 +1,3 @@
 .gitconfig
 *.xml
-./Tests/CodeCoverage.json
 BuildOutput/

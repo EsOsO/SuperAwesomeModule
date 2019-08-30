@@ -1,8 +1,8 @@
-name: Tests
+name: Workflow
 on: [push]
 jobs:
-  pwsh_tests:
-    name: Module tests on ${{ matrix.os }} - ${{ matrix.shell }}
+  test:
+    name: Module tests on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -13,16 +13,23 @@ jobs:
             shell: powershell
           - os: macOS-latest
             shell: powershell
-
     steps:
-      - name: Dump matrix content
-        env:
-          MATRIX_CONTENT: ${{ toJson(matrix) }}
-        run: echo "$MATRIX_CONTENT"
-
       - name: Checkout
         uses: actions/checkout@v1
-
-      - name: Run Pester tests
+      - name: Run Pester tests - Powershell Core
+        if: matrix.shell == 'pwsh'
         shell: pwsh
-        run: ./build.ps1 -Task Test
+        run: ./build/build.ps1 -Task Test
+      - name: Run Pester tests - Windows Powershell
+        if: matrix.shell == 'powershell'
+        shell: powershell
+        run: ./build/build.ps1 -Task Test
+  build:
+    name: Release module
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - run: ./build/build.ps1 -Task Release
+        shell: powershell
