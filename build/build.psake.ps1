@@ -1,11 +1,13 @@
 Properties {
     $Timestamp = Get-Date -uformat "%Y%m%d-%H%M%S"
-    $PSVersion = $PSVersionTable.PSVersion.Major
-    $Version = & gitversion | ConvertFrom-Json
-    $ModuleVersion = $Version.MajorMinorPatch
-    $SemVer = $Version.SemVer
-    $BuildFolder = '{0}\{1}-{2}' -f $env:BHBuildOutput, $env:BHProjectName, $SemVer
     $RequiredCodeCoverage = .8
+
+    if ($PSVersionTable.Platform -eq 'Win32NT') {
+        $Version = & gitversion | ConvertFrom-Json
+        $ModuleVersion = $Version.MajorMinorPatch
+        $SemVer = $Version.SemVer
+        $BuildFolder = '{0}\{1}-{2}' -f $env:BHBuildOutput, $env:BHProjectName, $SemVer
+    }
 }
 
 FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
@@ -56,6 +58,9 @@ Task Build -Depends ExportFunctions {
     Set-Content -Path $BuildFolder\$ModuleFileName -Value $sb.ToString() -Encoding 'UTF8'
 
     Copy-Item -Path $ENV:BHProjectPath\docs\LICENSE.md -Destination $BuildFolder\LICENSE
+
+    'Packing module'
+    Compress-Archive -Path $BuildFolder -DestinationPath ('{0}\{1}-{2}.zip' -f $ENV:BHBuildOutput, $ENV:BHProjectName, $SemVer)
 }
 
 Task StaticAnalysis -Depends Build {
@@ -100,12 +105,7 @@ Task Test -Depends StaticAnalysis {
     Remove-Module $env:BHProjectName -Force -ErrorAction SilentlyContinue
 }
 
-Task Package -Depends Test {
-    'Packing module'
-    Compress-Archive -Path $BuildFolder -DestinationPath ('{0}\{1}-{2}.zip' -f $ENV:BHBuildOutput, $ENV:BHProjectName, $SemVer)
-}
-
-Task Release -Depends Package {
+Task Release {
     if ($ENV:BHBranchName -eq 'master') {
         Invoke-PSDeploy -Tags Release
     } else {
