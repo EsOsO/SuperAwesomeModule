@@ -83,7 +83,7 @@ Task Test -Depends StaticAnalysis {
     }
 
     if ($RequiredCodeCoverage -gt .0) {
-        $Params['CodeCoverage'] = $ENV:BHBuildOutput + '\*\*.psm1'
+        $Params['CodeCoverage'] = $ENV:BHModulePath + '\*\*.psm1'
         $Params['CodeCoverageOutputFile'] = $ENV:BHBuildOutput + '\code_coverage.xml'
     }
 
