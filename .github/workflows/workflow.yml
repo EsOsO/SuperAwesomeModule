@@ -16,7 +16,7 @@ jobs:
           path: BuildOutput/
 
   test:
-    name: Module tests on ${{ matrix.os }}
+    name: Test on ${{ matrix.os }} [${{ matrix.shell }}]
     runs-on: ${{ matrix.os }}
     needs: build
     strategy:
