@@ -63,7 +63,7 @@ Task Build -Depends ExportFunctions {
     Compress-Archive -Path $BuildFolder -DestinationPath ('{0}\{1}-{2}.zip' -f $ENV:BHBuildOutput, $ENV:BHProjectName, $SemVer)
 }
 
-Task StaticAnalysis -Depends Build {
+Task StaticAnalysis -Depends Init {
     'Starting PSScriptAnalyzer'
     Invoke-ScriptAnalyzer -Path $BuildFolder -Settings PSGallery -Recurse
     'Ended PSScriptAnalyzer'
