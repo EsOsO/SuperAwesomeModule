@@ -111,7 +111,7 @@ Task Test -Depends StaticAnalysis {
 Task Release -Depends Init {
     if ($ENV:BHBranchName -eq 'master') {
         $ModuleToPublish = Get-ChildItem ($ENV:BHBuildOutput + '\' + $ENV:BHProjectName + '*') -Directory | select -ExpandProperty FullName
-        Invoke-PSDeploy -Tags Release
+        Publish-Module -Path $ModuleToPublish -NuGetApiKey $ENV:NuGetApiKey -AllowPrerelease
     } else {
         "Not publishing to PowershellGallery as we aren't in master branch"
     }
