@@ -72,6 +72,7 @@ Task StaticAnalysis -Depends Init {
 }
 
 Task Test -Depends StaticAnalysis {
+    $ModuleToTest = Get-ChildItem ($ENV:BHBuildOutput + '\' + $ENV:BHProjectName + '*')
     $TestsPath = Join-Path -Path $ENV:BHProjectPath -ChildPath 'Tests'
 
     # Execute tests
@@ -83,12 +84,12 @@ Task Test -Depends StaticAnalysis {
     }
 
     if ($RequiredCodeCoverage -gt .0) {
-        $Params['CodeCoverage'] = $ENV:BHModulePath + '\*\*.psm1'
+        $Params['CodeCoverage'] = $ModuleToTest + '\*\*.psm1'
         $Params['CodeCoverageOutputFile'] = $ENV:BHBuildOutput + '\code_coverage.xml'
     }
 
     Remove-Module $ENV:BHProjectName -Force -ErrorAction SilentlyContinue
-    Import-Module ('{0}\{1}.psd1' -f $ENV:BHModulePath ,$ENV:BHProjectName) -Force
+    Import-Module ('{0}\{1}.psd1' -f $ModuleToTest ,$ENV:BHProjectName) -Force
 
     $TestResults = Invoke-Pester @Params
 
@@ -109,6 +110,7 @@ Task Test -Depends StaticAnalysis {
 
 Task Release -Depends Init {
     if ($ENV:BHBranchName -eq 'master') {
+        $ModuleToPublish = Get-ChildItem ($ENV:BHBuildOutput + '\' + $ENV:BHProjectName + '*')
         Invoke-PSDeploy -Tags Release
     } else {
         "Not publishing to PowershellGallery as we aren't in master branch"

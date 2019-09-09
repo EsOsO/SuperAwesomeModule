@@ -1,7 +1,7 @@
 Deploy Module {
     By PSGalleryModule {
         Tagged Release
-        FromSource $BuildFolder
+        FromSource $ModuleToPublish
         To PSGallery
         WithOptions @{
             ApiKey = $ENV:NugetApiKey
