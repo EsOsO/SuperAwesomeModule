@@ -67,12 +67,12 @@ Task Build -Depends ExportFunctions {
 
 Task StaticAnalysis -Depends Init {
     'Starting PSScriptAnalyzer'
-    Invoke-ScriptAnalyzer -Path $ENV:BHModulePath -Settings PSGallery -Recurse
+    Invoke-ScriptAnalyzer -Path $ENV:BHBuildOutput -Settings PSGallery -Recurse
     'Ended PSScriptAnalyzer'
 }
 
 Task Test -Depends StaticAnalysis {
-    $TestsPath = Join-Path -Path $env:BHProjectPath -ChildPath 'Tests'
+    $TestsPath = Join-Path -Path $ENV:BHProjectPath -ChildPath 'Tests'
 
     # Execute tests
     $Params = @{
@@ -87,7 +87,7 @@ Task Test -Depends StaticAnalysis {
         $Params['CodeCoverageOutputFile'] = $ENV:BHBuildOutput + '\code_coverage.xml'
     }
 
-    Remove-Module $env:BHProjectName -Force -ErrorAction SilentlyContinue
+    Remove-Module $ENV:BHProjectName -Force -ErrorAction SilentlyContinue
     Import-Module ('{0}\{1}.psd1' -f $ENV:BHModulePath ,$ENV:BHProjectName) -Force
 
     $TestResults = Invoke-Pester @Params
@@ -104,7 +104,7 @@ Task Test -Depends StaticAnalysis {
         }
     }
 
-    Remove-Module $env:BHProjectName -Force -ErrorAction SilentlyContinue
+    Remove-Module $ENV:BHProjectName -Force -ErrorAction SilentlyContinue
 }
 
 Task Release {

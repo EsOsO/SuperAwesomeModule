@@ -29,6 +29,13 @@ jobs:
           - os: macOS-latest
             shell: powershell
     steps:
+      - name: Download artifact
+        uses: actions/download-artifact@master
+        with:
+          name: built-module
+          path: BuildOutput/
+      - name: Checkout
+        uses: actions/checkout@master
       - name: Run Pester tests - Powershell Core
         if: matrix.shell == 'pwsh'
         shell: pwsh
