@@ -44,3 +44,16 @@ jobs:
         if: matrix.shell == 'powershell'
         shell: powershell
         run: ./build/build.ps1 -Task Test
+
+  release:
+    name: Release module
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/download-artifact@master
+        with:
+          name: built-module
+          path: BuildOutput/
+      - run: ./build/build.ps1 -Task Release
+        shell: pwsh
