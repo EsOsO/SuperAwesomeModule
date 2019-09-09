@@ -44,6 +44,11 @@ jobs:
         if: matrix.shell == 'powershell'
         shell: powershell
         run: ./build/build.ps1 -Task Test
+      - name: Upload artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: test-module
+          path: BuildOutput/
 
   release:
     name: Release module
