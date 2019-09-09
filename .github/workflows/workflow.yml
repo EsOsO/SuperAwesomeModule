@@ -1,27 +1,59 @@
-name: Tests
+name: Workflow
 on: [push]
 jobs:
-  pwsh_tests:
-    name: PowerShell Core tests on ${{ matrix.os }}
+  build:
+    name: Build module
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - run: ./build/build.ps1 -Task Build
+        shell: pwsh
+      - name: Upload artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: built-module
+          path: BuildOutput/
+
+  test:
+    name: Test on ${{ matrix.os }} [${{ matrix.shell }}]
     runs-on: ${{ matrix.os }}
+    needs: build
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        shell: [pwsh, powershell]
+        exclude:
+          - os: ubuntu-latest
+            shell: powershell
+          - os: macOS-latest
+            shell: powershell
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
-      - name: Run Pester tests
+        uses: actions/checkout@master
+      - name: Download artifact
+        uses: actions/download-artifact@master
+        with:
+          name: built-module
+          path: BuildOutput/
+      - name: Run Pester tests - Powershell Core
+        if: matrix.shell == 'pwsh'
         shell: pwsh
-        run: ./build.ps1 -Task Test
-
-  powershell_tests:
-    name: PowerShell tests on Windows
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Run Pester tests
+        run: ./build/build.ps1 -Task Test
+      - name: Run Pester tests - Windows Powershell
+        if: matrix.shell == 'powershell'
         shell: powershell
-        run: .\build.ps1 -Task Test
+        run: ./build/build.ps1 -Task Test
+
+  release:
+    name: Release module
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/download-artifact@master
+        with:
+          name: built-module
+          path: BuildOutput/
+      - run: ./build/build.ps1 -Task Release
+        shell: pwsh

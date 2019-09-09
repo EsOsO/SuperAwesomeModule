@@ -1,6 +1,3 @@
-Remove-Module $env:BHProjectName -Force -ErrorAction SilentlyContinue
-Import-Module $env:BHPSModuleManifest -Force
-
 Describe ('Help tests for {0}' -f $env:BHProjectName) -Tags Build {
 
     $Functions = Get-Command -Module $env:BHProjectName -CommandType Function

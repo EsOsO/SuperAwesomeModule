@@ -1,5 +1,7 @@
 # SuperAwesomeModule
 
+![](https://github.com/EsOsO/SuperAwesomeModule/workflows/Workflow/badge.svg)
+
 This module will provide a basic scaffolding template for powershell module
 authors with these features out of the box:
 
