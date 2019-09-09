@@ -101,13 +101,15 @@ PrivateData = @{
         # LicenseUri = ''
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'http://github.com/EsOsO/SuperAwesomeModule'
 
         # A URL to an icon representing this module.
         # IconUri = ''
 
         # ReleaseNotes of this module
         ReleaseNotes = ''
+
+        Prerelease = 'alpha'
 
     } # End of PSData hashtable
 
