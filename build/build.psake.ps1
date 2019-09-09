@@ -107,7 +107,7 @@ Task Test -Depends StaticAnalysis {
     Remove-Module $ENV:BHProjectName -Force -ErrorAction SilentlyContinue
 }
 
-Task Release {
+Task Release -Depends Init {
     if ($ENV:BHBranchName -eq 'master') {
         Invoke-PSDeploy -Tags Release
     } else {
