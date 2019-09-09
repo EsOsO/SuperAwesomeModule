@@ -6,7 +6,7 @@ Properties {
         $Version = & gitversion | ConvertFrom-Json
         $ModuleVersion = $Version.MajorMinorPatch
         $SemVer = $Version.SemVer
-        $BuildFolder = '{0}\{1}-{2}' -f $env:BHBuildOutput, $env:BHProjectName, $SemVer
+        $BuildFolder = '{0}\{1}-{2}' -f $ENV:BHBuildOutput, $ENV:BHProjectName, $SemVer
     }
 }
 
@@ -15,7 +15,7 @@ FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
 Task Default -Depends Test
 
 Task Init {
-    Set-Location -Path $env:BHProjectPath
+    Set-Location -Path $ENV:BHProjectPath
     'Environment Variables:'
     Get-ChildItem -Path ENV:
     "`n"
@@ -26,8 +26,8 @@ Task Init {
 }
 
 Task Clean -Depends Init {
-    if (Test-Path $env:BHBuildOutput) {
-        Remove-Item -Recurse -Path $env:BHBuildOutput
+    if (Test-Path $ENV:BHBuildOutput) {
+        Remove-Item -Recurse -Path $ENV:BHBuildOutput
     }
 }
 
@@ -86,7 +86,7 @@ Task Test -Depends StaticAnalysis {
     }
 
     Remove-Module $env:BHProjectName -Force -ErrorAction SilentlyContinue
-    Import-Module ('{0}\{1}.psd1' -f $BuildFolder ,$ENV:BHProjectName) -Force
+    Import-Module ('{0}\{1}.psd1' -f $ENV:BHModulePath ,$ENV:BHProjectName) -Force
 
     $TestResults = Invoke-Pester @Params
 
