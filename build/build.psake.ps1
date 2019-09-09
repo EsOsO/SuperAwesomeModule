@@ -72,7 +72,7 @@ Task StaticAnalysis -Depends Init {
 }
 
 Task Test -Depends StaticAnalysis {
-    $ModuleToTest = Get-ChildItem ($ENV:BHBuildOutput + '\' + $ENV:BHProjectName + '*')
+    $ModuleToTest = Get-ChildItem ($ENV:BHBuildOutput + '\' + $ENV:BHProjectName + '*') -Directory
     $TestsPath = Join-Path -Path $ENV:BHProjectPath -ChildPath 'Tests'
 
     # Execute tests
@@ -110,7 +110,7 @@ Task Test -Depends StaticAnalysis {
 
 Task Release -Depends Init {
     if ($ENV:BHBranchName -eq 'master') {
-        $ModuleToPublish = Get-ChildItem ($ENV:BHBuildOutput + '\' + $ENV:BHProjectName + '*')
+        $ModuleToPublish = Get-ChildItem ($ENV:BHBuildOutput + '\' + $ENV:BHProjectName + '*') -Directory
         Invoke-PSDeploy -Tags Release
     } else {
         "Not publishing to PowershellGallery as we aren't in master branch"
