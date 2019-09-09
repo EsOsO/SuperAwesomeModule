@@ -29,6 +29,8 @@ Task Clean -Depends Init {
     if (Test-Path $ENV:BHBuildOutput) {
         Remove-Item -Recurse -Path $ENV:BHBuildOutput
     }
+
+    New-Item -ItemType Directory -Path $ENV:BHBuildOutput | Out-Null
 }
 
 Task IncreaseVersion -Depends Clean {
