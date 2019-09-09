@@ -65,7 +65,7 @@ Task Build -Depends ExportFunctions {
 
 Task StaticAnalysis -Depends Init {
     'Starting PSScriptAnalyzer'
-    Invoke-ScriptAnalyzer -Path $BuildFolder -Settings PSGallery -Recurse
+    Invoke-ScriptAnalyzer -Path $ENV:BHModulePath -Settings PSGallery -Recurse
     'Ended PSScriptAnalyzer'
 }
 
