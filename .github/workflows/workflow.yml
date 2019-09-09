@@ -62,3 +62,5 @@ jobs:
           path: BuildOutput/
       - run: ./build/build.ps1 -Task Release
         shell: pwsh
+        env:
+          NuGetApiKey: ${{ secrets.NuGetApiKey }}
