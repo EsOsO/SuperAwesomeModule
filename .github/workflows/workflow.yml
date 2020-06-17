@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build module
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -56,14 +56,12 @@ jobs:
         with:
           name: built-module
           path: BuildOutput/
-      - name: Run Pester tests - Powershell Core
+
+      - name: Run Pester tests - ${{ matrix.shell }}
         if: matrix.shell == 'pwsh'
-        shell: pwsh
+        shell: ${{ matrix.shell }}
         run: ./build/build.ps1 -Task Test
-      - name: Run Pester tests - Windows Powershell
-        if: matrix.shell == 'powershell'
-        shell: powershell
-        run: ./build/build.ps1 -Task Test
+
       - name: Upload artifact
         uses: actions/upload-artifact@master
         with:
@@ -75,7 +73,6 @@ jobs:
     runs-on: windows-latest
     needs: test
     steps:
-      - uses: actions/checkout@master
       - uses: actions/download-artifact@master
         with:
           name: built-module
