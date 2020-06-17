@@ -1,14 +1,36 @@
-name: Workflow
-on: [push]
+name: CI
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [develop]
+
 jobs:
   build:
     name: Build module
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@master
-      - run: ./build/build.ps1 -Task Build
+        uses: actions/checkout@v2
+
+      - name: Fetch tags for GitVersion
+        run: git fetch --tags
+
+      - name: Fetch master for GitVersion
+        if: github.ref != 'refs/heads/master'
+        run: git branch --create-reflog master origin/master
+
+      - name: GitVersion
+        id: gitversion  # step id used as reference for output values
+        uses: roryprimrose/rungitversion@v1
+
+      - name: Build module
+        env:
+          GITVERSION_MAJORMINORPATCH: ${{ steps.gitversion.outputs.MajorMinorPatch }}
+          GITVERSION_SEMVER: ${{ steps.gitversion.outputs.SemVer }}
+        run: ./build/build.ps1 -Task Build
         shell: pwsh
+
       - name: Upload artifact
         uses: actions/upload-artifact@master
         with:
@@ -29,21 +51,17 @@ jobs:
           - os: macOS-latest
             shell: powershell
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
       - name: Download artifact
         uses: actions/download-artifact@master
         with:
           name: built-module
           path: BuildOutput/
-      - name: Run Pester tests - Powershell Core
+
+      - name: Run Pester tests - ${{ matrix.shell }}
         if: matrix.shell == 'pwsh'
-        shell: pwsh
+        shell: ${{ matrix.shell }}
         run: ./build/build.ps1 -Task Test
-      - name: Run Pester tests - Windows Powershell
-        if: matrix.shell == 'powershell'
-        shell: powershell
-        run: ./build/build.ps1 -Task Test
+
       - name: Upload artifact
         uses: actions/upload-artifact@master
         with:
@@ -55,7 +73,6 @@ jobs:
     runs-on: windows-latest
     needs: test
     steps:
-      - uses: actions/checkout@master
       - uses: actions/download-artifact@master
         with:
           name: built-module
