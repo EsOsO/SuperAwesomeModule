@@ -25,9 +25,6 @@ jobs:
         uses: roryprimrose/rungitversion@v1
 
       - name: Build module
-        env:
-          GITVERSION_MAJORMINORPATCH: ${{ steps.gitversion.outputs.MajorMinorPatch }}
-          GITVERSION_SEMVER: ${{ steps.gitversion.outputs.SemVer }}
         run: ./build/build.ps1 -Task Build
         shell: pwsh
 
@@ -38,12 +35,11 @@ jobs:
           path: BuildOutput/
 
   test:
-    name: Test on ${{ matrix.os }} [${{ matrix.shell }}]
     runs-on: ${{ matrix.os }}
     needs: build
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         shell: [pwsh, powershell]
         exclude:
           - os: ubuntu-latest
@@ -57,9 +53,8 @@ jobs:
           name: built-module
           path: BuildOutput/
 
-      - name: Run Pester tests - ${{ matrix.shell }}
-        if: matrix.shell == 'pwsh'
-        shell: ${{ matrix.shell }}
+      - name: Run Pester tests
+        shell: matrix.shell
         run: ./build/build.ps1 -Task Test
 
       - name: Upload artifact

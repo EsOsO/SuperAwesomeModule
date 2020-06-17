@@ -2,15 +2,17 @@ param (
     [string[]] $Task = 'Default'
 )
 
+$ErrorView = 'NormalView'
+
 Write-Verbose -Message ('Beginning "{0}" process...' -f ($Task -join ','))
 
 # Bootstrap the environment
-Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
+Get-PackageProvider -Name NuGet -ForceBootstrap
 
 # Install PSDepend module if it is not already installed
-if (-not (Get-Module -Name PSDepend -ListAvailable)) {
-    Install-Module -Name PSDepend -Scope CurrentUser -Force -Confirm:$false
-}
+# if (-not (Get-Module -Name PSDepend -ListAvailable)) {
+#    Install-Module -Name PSDepend -Scope CurrentUser -Force -Confirm:$false
+# }
 
 # Install build dependencies required for Init task
 Import-Module -Name PSDepend
