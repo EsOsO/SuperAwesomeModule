@@ -2,12 +2,13 @@ Properties {
     $Timestamp = Get-Date -uformat "%Y%m%d-%H%M%S"
     $RequiredCodeCoverage = .8
 
-    if ($PSVersionTable.Platform -eq 'Win32NT') {
-        $Version = & gitversion | ConvertFrom-Json
-        $ModuleVersion = $Version.MajorMinorPatch
-        $SemVer = $Version.SemVer
-        $BuildFolder = '{0}\{1}-{2}' -f $ENV:BHBuildOutput, $ENV:BHProjectName, $SemVer
+    if (-not ${env:GITVERSION_MAJORMINORPATCH} -or -not ${env:GITVERSION_SEMVER}) {
+        throw "Need semver variables from gitversion"
     }
+
+    $ModuleVersion = ${env:GITVERSION_MAJORMINORPATCH}
+    $SemVer = ${env:GITVERSION_SEMVER}
+    $BuildFolder = '{0}\{1}-{2}' -f $ENV:BHBuildOutput, $ENV:BHProjectName, $SemVer
 }
 
 FormatTaskName (('-' * 25) + ('[ {0,-28} ]') + ('-' * 25))
