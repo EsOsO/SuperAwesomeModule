@@ -1,16 +1,17 @@
 # SuperAwesomeModule
 
-![](https://github.com/EsOsO/SuperAwesomeModule/workflows/Workflow/badge.svg)
+![Build status](https://github.com/EsOsO/SuperAwesomeModule/workflows/Workflow/badge.svg?branch=master)
+![Build status](https://github.com/EsOsO/SuperAwesomeModule/workflows/Workflow/badge.svg?branch=develop)
 
 This module will provide a basic scaffolding template for powershell module
 authors with these features out of the box:
 
 * Github repo health best practices
 * SemVer versioning (using gitversion)
-* Azure Pipelines for CI/CD
+* Github Actions for CI/CD
 * Powershell Gallery publishing
-* ReadTheDocs documentation
-* Codecov.io code coverage
+* [WIP] ReadTheDocs documentation
+* [WIP] Codecov.io code coverage
 
 ## Installation
 
