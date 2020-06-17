@@ -25,9 +25,6 @@ jobs:
         uses: roryprimrose/rungitversion@v1
 
       - name: Build module
-        env:
-          GITVERSION_MAJORMINORPATCH: ${{ steps.gitversion.outputs.MajorMinorPatch }}
-          GITVERSION_SEMVER: ${{ steps.gitversion.outputs.SemVer }}
         run: ./build/build.ps1 -Task Build
         shell: pwsh
 

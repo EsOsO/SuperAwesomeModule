@@ -2,12 +2,12 @@ Properties {
     $Timestamp = Get-Date -uformat "%Y%m%d-%H%M%S"
     $RequiredCodeCoverage = .8
 
-    if (-not ${env:GITVERSION_MAJORMINORPATCH} -or -not ${env:GITVERSION_SEMVER}) {
+    if (-not ${env:GitVersion_MajorMinorPatch} -or -not ${env:GitVersion_SemVer}) {
         throw "Need semver variables from gitversion"
     }
 
-    $ModuleVersion = ${env:GITVERSION_MAJORMINORPATCH}
-    $SemVer = ${env:GITVERSION_SEMVER}
+    $ModuleVersion = ${env:GitVersion_MajorMinorPatch}
+    $SemVer = ${env:GitVersion_SemVer}
     $BuildFolder = '{0}\{1}-{2}' -f $ENV:BHBuildOutput, $ENV:BHProjectName, $SemVer
 }
 
